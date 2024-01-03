@@ -1,0 +1,3 @@
+[submodule "submodules/scripts"]
+	path = submodules/scripts
+	url = git@github.com:ZeKeyboard/scripts.git
