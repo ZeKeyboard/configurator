@@ -9,7 +9,7 @@ src/Generated/Layout.elm: $(KEYBOARD_LAYOUT_JSON) $(GENERATE_LAYOUT)
 	mkdir -p $(@D)
 	$(PYTHON) $(GENERATE_LAYOUT) -i $(KEYBOARD_LAYOUT_JSON) -l elm -o $@
 
-index.html: src/Generated/Layout.elm
+index.html: src/Generated/Layout.elm $(wildcard src/*.elm) $(wildcard src/**/*.elm)
 	elm make src/Main.elm
 
 clean:

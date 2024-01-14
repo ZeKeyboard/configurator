@@ -31,7 +31,9 @@ type alias Key =
   , y : Float
   , height : Float
   , width : Float
-  , action : Maybe Action
+  , actionLayer1 : Maybe Action
+  , actionLayer2 : Maybe Action
+  , actionLayer3 : Maybe Action
   }
 
 type alias Layout = List Key
