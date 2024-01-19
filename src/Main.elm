@@ -9,6 +9,7 @@ import Messages exposing (Msg)
 import Generated.Layout exposing (initialLayout)
 import Model exposing (Model)
 import KeyboardView exposing (keyboardView)
+import UI
 
 -- MAIN
 
@@ -19,8 +20,6 @@ main =
     , update = update
     , view = view >> toUnstyled
     }
-
-
 
 
 init : Model
@@ -42,7 +41,4 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  div []
-    [ input [ placeholder "Text to reverse", value model.content, onInput Messages.Change ] []
-    , div [] [ keyboardView model.layout model.currentLayerIndex ]
-    ]
+  (keyboardView model.layout model.currentLayerIndex) |> UI.configuratorView
