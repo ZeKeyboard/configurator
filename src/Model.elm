@@ -4,7 +4,7 @@ import Keyboard exposing (..)
 
 
 type alias Model =
-  { content : String
-  , layout : Layout
+  { layout : Layout
   , currentLayerIndex : Int
+  , selectedKey : Maybe Key
   }

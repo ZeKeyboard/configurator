@@ -25,7 +25,8 @@ type alias Action
 
 
 type alias Key =
-  { row : Int
+  { id : Int
+  , row : Int
   , col : Int
   , x : Float
   , y : Float

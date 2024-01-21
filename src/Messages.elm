@@ -1,5 +1,6 @@
 module Messages exposing (Msg(..))
 
+import Keyboard exposing (Key)
 
 type Msg
-  = Change String
+  = KeyClicked Key

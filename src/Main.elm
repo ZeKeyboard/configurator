@@ -24,16 +24,16 @@ main =
 
 init : Model
 init =
-  { content = ""
-  , layout = initialLayout
-  , currentLayerIndex = 0 }
+  { layout = initialLayout
+  , currentLayerIndex = 0
+  , selectedKey = Nothing }
 
 
 update : Messages.Msg -> Model -> Model
 update msg model =
   case msg of
-    Messages.Change newContent ->
-      { model | content = newContent }
+    Messages.KeyClicked key ->
+      { model | selectedKey = Just key }
 
 
 -- VIEW
@@ -41,4 +41,4 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  (keyboardView model.layout model.currentLayerIndex) |> UI.configuratorView
+  (keyboardView model.layout model.currentLayerIndex model.selectedKey) |> UI.configuratorView
