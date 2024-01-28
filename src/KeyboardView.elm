@@ -1,15 +1,14 @@
 module KeyboardView exposing (keyboardView)
 
-import Model exposing (Model)
 import Keyboard exposing (Layout, Key)
 import Css exposing (..)
-import Html
 import Html.Styled exposing (..)
 import Html.Styled.Events exposing (onClick)
 import Html.Styled.Attributes exposing (css)
 import Messages exposing (Msg)
-import Keyboard exposing (Action)
+import Keyboard exposing (selectedLayerAction)
 import KeyCodes exposing (keyCodeToString)
+import Keyboard exposing (Action(..))
 
 
 keyboardView : Layout -> Int -> Maybe Key -> Html Msg
@@ -29,11 +28,11 @@ keyView key layerIndex selectedKey =
         Nothing ->
           ""
         Just action ->
-          case (List.head action) of
-            Nothing ->
-              ""
-            Just keyPress ->
+          case action of
+            Single keyPress ->
               keyCodeToString keyPress.key
+            _ -> "[..]"
+
     x = keyX key
     y = keyY key
   in
@@ -46,6 +45,7 @@ keyView key layerIndex selectedKey =
               , top <| px <| y
               , left <| px <| x
               , borderStyle solid
+              , borderColor <| keyBorderColor <| keyIsSelected key selectedKey
               , borderWidth <| px 2
               , borderRadius <| px 5
               , hover [ backgroundColor <| keyHoverColor <| keyIsSelected key selectedKey ]
@@ -72,12 +72,14 @@ keyBackgroundColor isSelected =
   else
     rgb 200 200 200
 
+
 keyForegroundColor : Bool -> Color
 keyForegroundColor isSelected =
   if isSelected then
     rgb 255 255 255
   else
     rgb 0 0 0
+
 
 keyBorderColor : Bool -> Color
 keyBorderColor isSelected =
@@ -93,18 +95,6 @@ keyHoverColor isSelected =
     rgb 194 168 116
   else
     rgb 150 150 150
-
-
-selectedLayerAction : Key -> Int -> Maybe Action
-selectedLayerAction key layerIndex =
-  if layerIndex == 0 then
-    key.actionLayer1
-  else if layerIndex == 1 then
-    key.actionLayer2
-  else if layerIndex == 2 then
-    key.actionLayer3
-  else
-    Nothing
 
 
 keySize : Float

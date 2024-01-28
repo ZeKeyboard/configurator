@@ -9,11 +9,14 @@ import Messages exposing (Msg)
 import Generated.Layout exposing (initialLayout)
 import Model exposing (Model)
 import KeyboardView exposing (keyboardView)
+import InputView exposing (inputView)
+import Keyboard
 import UI
 
 -- MAIN
 
 
+main : Program () Model Msg
 main =
   Browser.sandbox
     { init = init
@@ -34,6 +37,15 @@ update msg model =
   case msg of
     Messages.KeyClicked key ->
       { model | selectedKey = Just key }
+    Messages.CreateAction key ->
+      { model | layout = Keyboard.createNewAction model.layout key model.currentLayerIndex }
+    Messages.SetKeyAction key action ->
+      let
+        newKey =
+          Keyboard.setKeyAction key model.currentLayerIndex (Just action)
+      in
+        { model | layout = Keyboard.updateKeyInLayout model.layout newKey
+                , selectedKey = Just newKey }
 
 
 -- VIEW
@@ -41,4 +53,15 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-  (keyboardView model.layout model.currentLayerIndex model.selectedKey) |> UI.configuratorView
+  let
+    keyInputView =
+      case model.selectedKey of
+        Nothing ->
+          text "Please select a key"
+        Just key ->
+          inputView (Keyboard.selectedLayerAction key model.currentLayerIndex) key
+  in
+    UI.configuratorView
+      (keyboardView model.layout model.currentLayerIndex model.selectedKey)
+      keyInputView
+
