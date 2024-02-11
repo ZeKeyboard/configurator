@@ -1,27 +1,20 @@
 module Keyboard exposing (..)
+import Browser.Navigation exposing (Key)
 
 
 type alias KeyCode =
   Int
 
 
-type alias ModifierCode =
-  Int
-
-
-type alias MediaCode =
-  Int
-
-
 type alias KeyPress =
   { key : KeyCode
-  , modifier: ModifierCode
-  , media: MediaCode
+  , modifier: KeyCode
+  , media: KeyCode
   }
 
 
 type Action
-  = Single KeyPress
+  = Single KeyCode
   | Sequence (List KeyPress)
   | FreeText String
 
@@ -55,12 +48,17 @@ selectedLayerAction key layerIndex =
     Nothing
 
 
-createNewAction : Layout -> Key -> Int -> Layout
-createNewAction layout key layerIndex =
+setDefaultAction : Key -> Int -> Key
+setDefaultAction key layerIndex =
+  setKeyAction key layerIndex <| Just <| defaultSingleAction
+
+
+createNewAction : Layout -> Key -> Layout
+createNewAction layout key =
   let
     replace k =
       if k.id == key.id then
-        setKeyAction k layerIndex <| Just <| FreeText <| ""
+        key
       else
         k
   in
@@ -93,7 +91,7 @@ updateKeyInLayout layout key =
 
 defaultSingleAction : Action
 defaultSingleAction =
-  Single { key = 0xF004, modifier = 0, media = 0 }
+  Single 0xF004
 
 
 defaultSequenceAction : Action

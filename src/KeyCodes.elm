@@ -1,4 +1,4 @@
-module KeyCodes exposing (keyCodeToString)
+module KeyCodes exposing (..)
 
 import Dict exposing (Dict)
 import Bitwise exposing (..)
@@ -165,6 +165,13 @@ keyCodes =
       , ((or 115  standardKeyCode), "F24"        )
       ]
 
+
+keyCodesFromString : Dict String Int
+keyCodesFromString =
+  Dict.fromList
+    (List.map (\(k, v) -> (v, k)) (Dict.toList keyCodes))
+
+
 keyCodeToString : Int -> String
 keyCodeToString keyCode =
     case Dict.get keyCode keyCodes of
@@ -173,3 +180,13 @@ keyCodeToString keyCode =
 
       Nothing ->
         ""
+
+
+keyCodeFromString : String -> Int
+keyCodeFromString str =
+    case Dict.get str keyCodesFromString of
+      Just keyCode ->
+        keyCode
+
+      Nothing ->
+        0

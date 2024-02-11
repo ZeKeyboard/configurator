@@ -38,7 +38,11 @@ update msg model =
     Messages.KeyClicked key ->
       { model | selectedKey = Just key }
     Messages.CreateAction key ->
-      { model | layout = Keyboard.createNewAction model.layout key model.currentLayerIndex }
+      let
+        newKey = Keyboard.setDefaultAction key model.currentLayerIndex
+      in
+        { model | layout = Keyboard.createNewAction model.layout newKey
+                , selectedKey = Just newKey }
     Messages.SetKeyAction key action ->
       let
         newKey =

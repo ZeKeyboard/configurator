@@ -29,8 +29,8 @@ keyView key layerIndex selectedKey =
           ""
         Just action ->
           case action of
-            Single keyPress ->
-              keyCodeToString keyPress.key
+            Single keyCode ->
+              keyCodeToString keyCode
             _ -> "[..]"
 
     x = keyX key
