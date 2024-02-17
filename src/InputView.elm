@@ -176,7 +176,7 @@ sequenceInput rawString keyPresses key maybeError =
         (Messages.SetKeyAction key (Sequence str (validKeyPresses) maybeErrorText))
 
   in
-    span [] [ input [ onInput <| onTextInput ] []
+    span [] [ input [ onInput <| onTextInput, value rawString ] []
             , span [] [ text <| String.concat [ String.fromInt numValidKeyPresses
                                               , " key combinations." ] ]
             , span [] [ text currentErrorText ] ]

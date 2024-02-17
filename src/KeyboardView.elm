@@ -13,10 +13,20 @@ import Keyboard exposing (Action(..))
 
 keyboardView : Layout -> Int -> Maybe Key -> Html Msg
 keyboardView layout layerIndex selectedKey =
-  div []
-      [ div [ ]
-      (List.map (\k -> keyView k layerIndex selectedKey) layout)
-      ]
+  let
+    maxKeyX =
+      Maybe.withDefault 0 (List.maximum <| List.map keyX layout)
+
+    maxKeyY =
+      Maybe.withDefault 0 (List.maximum <| List.map keyY layout)
+  in
+    div []
+        [ div [ css [ width <| px <| maxKeyX + keySize + offsetX
+                    , height <| px <| maxKeyY + keySize + offsetY
+                    , position relative
+                    ] ]
+          (List.map (\k -> keyView k layerIndex selectedKey) layout)
+        ]
 
 keyView : Key -> Int -> Maybe Key -> Html Msg
 keyView key layerIndex selectedKey =

@@ -7,10 +7,11 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css)
 
 
-configuratorView : Html Msg -> Html Msg -> Html Msg
-configuratorView keyboardView inputView =
+configuratorView : Html Msg -> Html Msg -> Html Msg -> Html Msg
+configuratorView keyboardView inputView fileView =
     div [ ]
         [ keyboardView
         , inputView
+        , fileView
         ]
 

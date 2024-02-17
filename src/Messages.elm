@@ -6,3 +6,4 @@ type Msg
   = KeyClicked Key
   | CreateAction Key
   | SetKeyAction Key Action
+  | Download
