@@ -1,5 +1,7 @@
 module Keyboard exposing (..)
 import Browser.Navigation exposing (Key)
+import KeyCodes exposing (isStandardKeyCode, isModifierKeyCode, isMediaKeyCode)
+import KeyCodes exposing (keyCodeFromString)
 
 
 type alias KeyCode =
@@ -15,7 +17,7 @@ type alias KeyPress =
 
 type Action
   = Single KeyCode
-  | Sequence (List KeyPress)
+  | Sequence String (List KeyPress) (Maybe String)  -- raw string, list of key presses, possible error message
   | FreeText String
 
 
@@ -96,7 +98,7 @@ defaultSingleAction =
 
 defaultSequenceAction : Action
 defaultSequenceAction =
-  Sequence [ ]
+  Sequence "" [ ] Nothing
 
 
 defaultFreeTextAction : Action

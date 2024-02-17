@@ -24,6 +24,26 @@ mediaKeyCode =
   0xE400
 
 
+isStandardKeyCode : Int -> Bool
+isStandardKeyCode keyCode =
+  (and keyCode standardKeyCode) == standardKeyCode
+
+
+isModifierKeyCode : Int -> Bool
+isModifierKeyCode keyCode =
+  (and keyCode modifierKeyCode) == modifierKeyCode
+
+
+isSystemKeyCode : Int -> Bool
+isSystemKeyCode keyCode =
+  (and keyCode systemKeyCode) == systemKeyCode
+
+
+isMediaKeyCode : Int -> Bool
+isMediaKeyCode keyCode =
+  (and keyCode mediaKeyCode) == mediaKeyCode
+
+
 keyCodes : Dict Int String
 keyCodes =
     Dict.fromList
@@ -182,11 +202,6 @@ keyCodeToString keyCode =
         ""
 
 
-keyCodeFromString : String -> Int
+keyCodeFromString : String -> Maybe Int
 keyCodeFromString str =
-    case Dict.get str keyCodesFromString of
-      Just keyCode ->
-        keyCode
-
-      Nothing ->
-        0
+    Dict.get str keyCodesFromString
