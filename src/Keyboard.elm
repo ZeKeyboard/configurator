@@ -1,7 +1,5 @@
 module Keyboard exposing (..)
 import Browser.Navigation exposing (Key)
-import KeyCodes exposing (isStandardKeyCode, isModifierKeyCode, isMediaKeyCode)
-import KeyCodes exposing (keyCodeFromString)
 
 
 type alias KeyCode =

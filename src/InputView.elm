@@ -86,29 +86,41 @@ valueInput action key =
 parseKeyPress : List String -> Result String KeyPress
 parseKeyPress maybeKeyCodes =
   let
-    parsedKeys = List.map (\str -> (str, keyCodeFromString str)) maybeKeyCodes
+    parsedKeys =
+      List.map (\str -> (str, keyCodeFromString str)) maybeKeyCodes
 
-    validKeyCodes = List.filterMap (\(_, maybeKeyCode)
-      -> case maybeKeyCode of
-        Just keyCode -> Just keyCode
-        Nothing -> Nothing) parsedKeys
+    validKeyCodes =
+      List.filterMap (\(_, maybeKeyCode) -> maybeKeyCode) parsedKeys
 
     invalidKeys = List.filterMap (\(str, maybeKeyCode)
       -> case maybeKeyCode of
         Just _ -> Nothing
         Nothing -> Just str) parsedKeys
 
-    key = Maybe.withDefault 0 (List.head <| List.filter isStandardKeyCode validKeyCodes)
-    modifier = Maybe.withDefault 0 (List.head <| List.filter isModifierKeyCode validKeyCodes)
-    media = Maybe.withDefault 0 (List.head <| List.filter isMediaKeyCode validKeyCodes)
+    key =
+      Maybe.withDefault
+        blankStandardKeyCode
+        (List.head <| List.filter isStandardKeyCode validKeyCodes)
+
+    modifier =
+      Maybe.withDefault
+        blankModifierKeyCode
+        (List.head <| List.filter isModifierKeyCode validKeyCodes)
+
+    media =
+      Maybe.withDefault
+        blankMediaKeyCode
+        (List.head <| List.filter isMediaKeyCode validKeyCodes)
 
   in
     if List.length maybeKeyCodes > 3 then
-      Err <| String.concat [ "Too many key codes in keypress (", String.join " + " maybeKeyCodes, ")" ]
+      Err <| String.concat
+        [ "Too many key codes in keypress (", String.join " + " maybeKeyCodes, ")" ]
     else if List.length maybeKeyCodes < 1 then
       Err "No key codes in keypress"
     else if List.length invalidKeys > 0 then
-      Err <| String.concat [ "Invalid key codes in keypress: ", String.join ", " invalidKeys ]
+      Err <| String.concat
+        [ "Invalid key codes in keypress: ", String.join ", " invalidKeys ]
     else
       Ok { key = key, modifier = modifier, media = media }
 

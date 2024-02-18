@@ -5,16 +5,16 @@ import Html.Styled exposing (Html, Attribute, div, input, text)
 import Html.Styled exposing (toUnstyled)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onInput)
-import File.Download as Download
 
 import Messages exposing (Msg)
 import Generated.Layout exposing (initialLayout)
 import Model exposing (Model)
 import KeyboardView exposing (keyboardView)
 import InputView exposing (inputView)
-import FileView exposing (fileView)
+import FileView exposing (fileView, maybeDownloadFile)
 import Keyboard
 import UI
+import Browser exposing (application)
 
 
 main : Program () Model Msg
@@ -63,7 +63,7 @@ update msg model =
         ({ model | layout = Keyboard.updateKeyInLayout model.layout newKey
                 , selectedKey = Just newKey }, Cmd.none)
     Messages.Download ->
-      (model, Download.string "file.txt" "text/plain" "hejsan")
+      maybeDownloadFile model
 
 
 view : Model -> Html Msg
