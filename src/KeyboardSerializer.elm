@@ -50,7 +50,7 @@ encodeSingleAction keyCode =
       1
 
     standardKey =
-      if KeyCodes.isStandardKeyCode keyCode then
+      if KeyCodes.isStandardLayerControlOrMouseCode keyCode then
         keyCode
       else
         KeyCodes.blankStandardKeyCode

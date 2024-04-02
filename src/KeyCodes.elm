@@ -2,6 +2,7 @@ module KeyCodes exposing (..)
 
 import Dict exposing (Dict)
 import Bitwise exposing (..)
+import Html.Events exposing (keyCode)
 
 
 standardKeyCode : Int
@@ -22,6 +23,26 @@ systemKeyCode =
 mediaKeyCode : Int
 mediaKeyCode =
   0xE400
+
+
+controlKeyCode : Int
+controlKeyCode =
+  0xD000
+
+
+layerHoldModifierKeyCode : Int
+layerHoldModifierKeyCode =
+  0xC000
+
+
+layerToggleModifierKeyCode : Int
+layerToggleModifierKeyCode =
+  0xB000
+
+
+mouseKeyCode : Int
+mouseKeyCode =
+  0xA000
 
 
 blankStandardKeyCode : Int
@@ -62,6 +83,35 @@ isSystemKeyCode keyCode =
 isMediaKeyCode : Int -> Bool
 isMediaKeyCode keyCode =
   (and keyCode 0xFF00) == mediaKeyCode
+
+
+isLayerHoldModifierKeyCode : Int -> Bool
+isLayerHoldModifierKeyCode keyCode =
+  (and keyCode 0xFF00) == layerHoldModifierKeyCode
+
+
+isLayerToggleModifierKeyCode : Int -> Bool
+isLayerToggleModifierKeyCode keyCode =
+  (and keyCode 0xFF00) == layerToggleModifierKeyCode
+
+
+isMouseKeyCode : Int -> Bool
+isMouseKeyCode keyCode =
+  (and keyCode 0xFF00) == mouseKeyCode
+
+
+isControlKeyCode : Int -> Bool
+isControlKeyCode keyCode =
+  (and keyCode 0xFF00) == controlKeyCode
+
+
+isStandardLayerControlOrMouseCode : Int -> Bool
+isStandardLayerControlOrMouseCode keyCode =
+  (isStandardKeyCode keyCode) || 
+  (isLayerHoldModifierKeyCode keyCode) ||
+  (isLayerToggleModifierKeyCode keyCode) ||
+  (isControlKeyCode keyCode) ||
+  (isMouseKeyCode keyCode)
 
 
 asciiKeyCodes : Dict Char Int
@@ -127,17 +177,18 @@ asciiCharToKeyCode char =
 keyCodes : Dict Int String
 keyCodes =
   Dict.fromList
-    [ ((or 0x01 modifierKeyCode), "Ctrl"       )
-    , ((or 0x02 modifierKeyCode), "Shift"      )
-    , ((or 0x04 modifierKeyCode), "Alt"        )
-    , ((or 0x08 modifierKeyCode), "Gui"        )
-    , ((or 0x10 modifierKeyCode), "RCtrl"      )
-    , ((or 0x20 modifierKeyCode), "RShift"     )
-    , ((or 0x40 modifierKeyCode), "RAlt"       )
-    , ((or 0x80 modifierKeyCode), "RGui"       )
-    , ((or 0x81   systemKeyCode), "PowerDown"  )
-    , ((or 0x82   systemKeyCode), "Sleep"      )
-    , ((or 0x83   systemKeyCode), "WakeUp"     )
+    [ ((or 0x01 modifierKeyCode), "Left Ctrl"       )
+    , ((or 0x02 modifierKeyCode), "Left Shift"      )
+    , ((or 0x04 modifierKeyCode), "Left Alt"        )
+    , ((or 0x08 modifierKeyCode), "Left Gui"        )
+    , ((or 0x10 modifierKeyCode), "Right Ctrl"      )
+    , ((or 0x20 modifierKeyCode), "Right Shift"     )
+    , ((or 0x40 modifierKeyCode), "Right Alt"       )
+    , ((or 0x80 modifierKeyCode), "Right Gui"       )
+    -- System keys are not currently supported
+    -- , ((or 0x81   systemKeyCode), "PowerDown"  )
+    -- , ((or 0x82   systemKeyCode), "Sleep"      )
+    -- , ((or 0x83   systemKeyCode), "WakeUp"     )
     , ((or 0xB0    mediaKeyCode), "Play"       )
     , ((or 0xB1    mediaKeyCode), "MediaPause" )
     , ((or 0xB2    mediaKeyCode), "Record"     )
@@ -263,6 +314,23 @@ keyCodes =
     , ((or 113  standardKeyCode), "F22"        )
     , ((or 114  standardKeyCode), "F23"        )
     , ((or 115  standardKeyCode), "F24"        )
+
+    -- Mouse controls
+    , ((or 0    mouseKeyCode), "Mouse Left Click"     )
+    , ((or 1    mouseKeyCode), "Mouse Right Click"    )
+    , ((or 2    mouseKeyCode), "Mouse Middle Click"   )
+    , ((or 3    mouseKeyCode), "Mouse Scroll Up"      )
+    , ((or 4    mouseKeyCode), "Mouse Scroll Down"    )
+    , ((or 5    mouseKeyCode), "Mouse Move Left"      )
+    , ((or 6    mouseKeyCode), "Mouse Move Right"     )
+    , ((or 7    mouseKeyCode), "Mouse Move Up"        )
+    , ((or 8    mouseKeyCode), "Mouse Move Down"      )
+    , ((or 9    mouseKeyCode), "Mouse Accelerate"    )
+
+    -- Control key codes
+    , ((or 0    controlKeyCode), "Brightness increase" )
+    , ((or 1    controlKeyCode), "Brightness decrease" )
+    , ((or 2    controlKeyCode), "Toggle configuration mode" )
     ]
 
 

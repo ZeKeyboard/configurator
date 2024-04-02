@@ -108,21 +108,26 @@ keySize : Float
 keySize =
   50
 
+
 keyPadding : Float
 keyPadding =
   5
+
 
 offsetX : Float
 offsetX =
   10
 
+
 offsetY : Float
 offsetY =
   10
 
+
 keyX : Key -> Float
 keyX key =
   key.x * (keySize + keyPadding) + offsetX
+
 
 keyY : Key -> Float
 keyY key =

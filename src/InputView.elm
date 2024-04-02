@@ -205,12 +205,27 @@ freeTextInput text key =
 singleInput : KeyCode -> Key -> Html Msg
 singleInput keyCode key =
   let
-    options =
+    standardKeys =
+      List.filter isStandardKeyCode (Dict.keys keyCodes)
+
+    modifierKeys =
+      List.filter isModifierKeyCode (Dict.keys keyCodes)
+
+    mediaKeys =
+      List.filter isMediaKeyCode (Dict.keys keyCodes)
+
+    mouseKeys =
+      List.filter isMouseKeyCode (Dict.keys keyCodes)
+
+    controlKeys =
+      List.filter isControlKeyCode (Dict.keys keyCodes)
+
+    options codes =
       List.map (\k -> option
         [ k |> keyCodeToString |> value
         , selected (k == keyCode) ]
         [ k |> keyCodeToString |> text ])
-        (Dict.keys keyCodes)
+        codes
 
     keyCodeConvert maybeCode =
       case maybeCode of
@@ -220,9 +235,18 @@ singleInput keyCode key =
           0
   in
     select [ name "actionType"
-           , css [ width (px 100) ]
+           , class "keyDropdown inputViewControl"
            , onInput <| \str -> Messages.SetKeyAction key
            <| Single
            <| (str |> keyCodeFromString |> keyCodeConvert) ]
-      options
+      ( options standardKeys
+      ++ [ hr [] [] ]
+      ++ options modifierKeys
+      ++ [ hr [] [] ]
+      ++ options mediaKeys
+      ++ [ hr [] [] ]
+      ++ options mouseKeys
+      ++ [ hr [] [] ]
+      ++ options controlKeys
+      )
 
