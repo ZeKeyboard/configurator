@@ -5,9 +5,8 @@ import Css exposing (..)
 import Html.Styled exposing (..)
 import Dict exposing (Dict)
 import Html.Styled.Events exposing (onClick)
-import Html.Styled.Attributes exposing (css, for, name, value)
+import Html.Styled.Attributes exposing (css, for, name, value, class, selected)
 import Html.Styled.Events exposing (onInput)
-import Html.Styled.Attributes exposing (selected)
 import KeyCodes exposing (..)
 
 
@@ -53,7 +52,9 @@ actionInput action key =
           Messages.SetKeyAction key defaultSingleAction
 
     actionDropdown =
-      select [ name "actionType", onInput actionInputToMessage, css [ width (px 100) ] ]
+      select [ class "keyDropdown inputViewControl"
+             , name "actionType"
+             , onInput actionInputToMessage ]
         [ option [ value singleActionString
                  , selected (selectedAction == singleActionString) ] [ "Single key" |> text ]
         , option [ value sequenceActionString
@@ -66,7 +67,8 @@ actionInput action key =
       [ label [ for "actionType" ] [ "Action type:" |> text ]
       , actionDropdown
       , valueInput action key
-      , button [ onClick <| Messages.CreateAction key ] [ "Reset action" |> text ]
+      , button [ class "inputViewControl"
+               , onClick <| Messages.CreateAction key ] [ "Reset action" |> text ]
       ]
 
 
@@ -153,7 +155,6 @@ sequenceInput rawString keyPresses key maybeError =
 
     onTextInput str =
       let
-
         parsedKeyPresses =
           parseSequence str
 
@@ -188,7 +189,8 @@ sequenceInput rawString keyPresses key maybeError =
         (Messages.SetKeyAction key (Sequence str (validKeyPresses) maybeErrorText))
 
   in
-    span [] [ input [ onInput <| onTextInput, value rawString ] []
+    span [] [ input [ class "inputViewControl"
+                    , onInput <| onTextInput, value rawString ] []
             , span [] [ text <| String.concat [ String.fromInt numValidKeyPresses
                                               , " key combinations." ] ]
             , span [] [ text currentErrorText ] ]

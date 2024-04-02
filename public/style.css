@@ -1,0 +1,23 @@
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.keyContainer {
+    position: absolute;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 5px;
+}
+
+.keyText {
+    margin: 2px;
+}
+
+.keyDropdown {
+    width: 100px;
+}
+
+.inputViewControl {
+    margin: 2px;
+}

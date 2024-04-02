@@ -4,7 +4,7 @@ import Keyboard exposing (Layout, Key)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Events exposing (onClick)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes exposing (css, class)
 import Messages exposing (Msg)
 import Keyboard exposing (selectedLayerAction)
 import KeyCodes exposing (keyCodeToString)
@@ -28,6 +28,7 @@ keyboardView layout layerIndex selectedKey =
           (List.map (\k -> keyView k layerIndex selectedKey) layout)
         ]
 
+
 keyView : Key -> Int -> Maybe Key -> Html Msg
 keyView key layerIndex selectedKey =
   let
@@ -50,19 +51,15 @@ keyView key layerIndex selectedKey =
               , height <| px <| key.height * (keySize) + (key.height - 1) * keyPadding
               , backgroundColor <| keyBackgroundColor <| keyIsSelected key selectedKey
               , color <| keyForegroundColor <| keyIsSelected key selectedKey
-              , position absolute
-              , cursor pointer
               , top <| px <| y
               , left <| px <| x
-              , borderStyle solid
               , borderColor <| keyBorderColor <| keyIsSelected key selectedKey
-              , borderWidth <| px 2
-              , borderRadius <| px 5
               , hover [ backgroundColor <| keyHoverColor <| keyIsSelected key selectedKey ]
               ]
+        , class "keyContainer"
         , onClick <| Messages.KeyClicked <| key
         ]
-      [ text keyText
+      [ div [ class "keyText" ] [ text keyText ] 
       ]
 
 
