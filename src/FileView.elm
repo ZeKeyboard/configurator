@@ -15,7 +15,7 @@ maybeDownloadFile model =
     serializedContent =
       KeyboardSerializer.serializeLayout model.layout
   in
-    (model, Download.bytes "Configuration.zkb" "application/x-binary" serializedContent)
+    (model, Download.string "Configuration.zkb" "text/plain" serializedContent)
 
 
 fileView : Html Msg

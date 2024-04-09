@@ -3,12 +3,40 @@ module KeyboardSerializer exposing (serializeLayout)
 import Bytes exposing (Bytes)
 import Bytes.Encode as Encode
 import Keyboard exposing (Key, Layout, KeyCode, KeyPress, Action)
+import Bitwise
 import KeyCodes
 
 
 encodeUint16 : Int -> Encode.Encoder
 encodeUint16 value =
   Encode.unsignedInt16 Bytes.LE value
+
+
+byteToHexAscii : Int -> String
+byteToHexAscii byte =
+  let
+    lowBits =
+      Bitwise.and 0x0F byte
+
+    highBits =
+      Bitwise.shiftRightBy 4 byte
+
+    intToHexChar value =
+      Char.fromCode (if value < 10 then 0x30 + value else 0x41 + value - 10)
+  in
+    String.fromList [ intToHexChar highBits, intToHexChar lowBits ]
+
+
+encodeUint16AsAscii : Int -> String
+encodeUint16AsAscii value =
+  let
+    lowByte =
+      Bitwise.and 0xFF value
+
+    highByte =
+      Bitwise.shiftRightBy 8 value
+  in
+    byteToHexAscii highByte ++ byteToHexAscii lowByte
 
 
 encodeKey : Key -> List Int
@@ -132,7 +160,7 @@ encodeFreetext text =
     encodeSequence keyPresses
 
 
-serializeLayout : Layout -> Bytes
+serializeLayout : Layout -> String
 serializeLayout layout =
   let
     numKeys =
@@ -155,9 +183,8 @@ serializeLayout layout =
       Basics.modBy 65500 (List.sum keysIntSequence)
 
     keysBytes =
-      Encode.sequence
-        <| [ encodeUint16 numKeys, encodeUint16 keysCheckSum ]
-          ++ (List.map encodeUint16 keysIntSequence)
-
+        [ encodeUint16AsAscii numKeys, encodeUint16AsAscii keysCheckSum ]
+          ++ (List.map encodeUint16AsAscii keysIntSequence)
   in
-    Encode.encode keysBytes
+    String.concat keysBytes
+
