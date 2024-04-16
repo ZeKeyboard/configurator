@@ -315,6 +315,16 @@ keyCodes =
     , ((or 114  standardKeyCode), "F23"        )
     , ((or 115  standardKeyCode), "F24"        )
 
+    -- Layer hold codes
+    , ((or 0    layerHoldModifierKeyCode), "Layer Hold 0"     )
+    , ((or 1    layerHoldModifierKeyCode), "Layer Hold 1"     )
+    , ((or 2    layerHoldModifierKeyCode), "Layer Hold 2"     )
+
+    -- Layer toggle codes
+    , ((or 0    layerToggleModifierKeyCode), "Layer Toggle 0"     )
+    , ((or 1    layerToggleModifierKeyCode), "Layer Toggle 1"     )
+    , ((or 2    layerToggleModifierKeyCode), "Layer Toggle 2"     )
+
     -- Mouse controls
     , ((or 0    mouseKeyCode), "Mouse Left Click"     )
     , ((or 1    mouseKeyCode), "Mouse Right Click"    )

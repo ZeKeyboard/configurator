@@ -205,20 +205,28 @@ freeTextInput text key =
 singleInput : KeyCode -> Key -> Html Msg
 singleInput keyCode key =
   let
+    allCodes =
+      (Dict.keys keyCodes)
+
     standardKeys =
-      List.filter isStandardKeyCode (Dict.keys keyCodes)
+      List.filter isStandardKeyCode allCodes
 
     modifierKeys =
-      List.filter isModifierKeyCode (Dict.keys keyCodes)
+      List.filter isModifierKeyCode allCodes
+
+    layerModifierKeys =
+      List.filter
+        (\k -> (isLayerHoldModifierKeyCode k) || isLayerToggleModifierKeyCode k)
+        allCodes
 
     mediaKeys =
-      List.filter isMediaKeyCode (Dict.keys keyCodes)
+      List.filter isMediaKeyCode allCodes
 
     mouseKeys =
-      List.filter isMouseKeyCode (Dict.keys keyCodes)
+      List.filter isMouseKeyCode allCodes
 
     controlKeys =
-      List.filter isControlKeyCode (Dict.keys keyCodes)
+      List.filter isControlKeyCode allCodes
 
     options codes =
       List.map (\k -> option
@@ -242,6 +250,8 @@ singleInput keyCode key =
       ( options standardKeys
       ++ [ hr [] [] ]
       ++ options modifierKeys
+      ++ [ hr [] [] ]
+      ++ options layerModifierKeys
       ++ [ hr [] [] ]
       ++ options mediaKeys
       ++ [ hr [] [] ]

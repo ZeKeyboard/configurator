@@ -5,12 +5,14 @@ import Html
 import Messages exposing (Msg)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (css)
+import ViewControl exposing (viewControl)
 
 
-configuratorView : Html Msg -> Html Msg -> Html Msg -> Html Msg
-configuratorView keyboardView inputView fileView =
+configuratorView : Html Msg -> Html Msg -> Html Msg -> Html Msg -> Html Msg
+configuratorView viewControl keyboardView inputView fileView =
     div [ ]
-        [ keyboardView
+        [ viewControl
+        , keyboardView
         , inputView
         , fileView
         ]

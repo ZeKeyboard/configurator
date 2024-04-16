@@ -10,6 +10,7 @@ import Messages exposing (Msg)
 import Generated.Layout exposing (initialLayout)
 import Model exposing (Model)
 import KeyboardView exposing (keyboardView)
+import ViewControl exposing (viewControl)
 import InputView exposing (inputView)
 import FileView exposing (fileView, maybeDownloadFile)
 import Keyboard
@@ -61,7 +62,9 @@ update msg model =
           Keyboard.setKeyAction key model.currentLayerIndex (Just action)
       in
         ({ model | layout = Keyboard.updateKeyInLayout model.layout newKey
-                , selectedKey = Just newKey }, Cmd.none)
+        , selectedKey = Just newKey }, Cmd.none)
+    Messages.SetLayer index ->
+      ({ model | currentLayerIndex = index }, Cmd.none)
     Messages.Download ->
       maybeDownloadFile model
 
@@ -77,6 +80,7 @@ view model =
           inputView (Keyboard.selectedLayerAction key model.currentLayerIndex) key
   in
     UI.configuratorView
+      (viewControl model.currentLayerIndex)
       (keyboardView model.layout model.currentLayerIndex model.selectedKey)
       keyInputView
       fileView

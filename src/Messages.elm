@@ -7,4 +7,5 @@ type Msg
   = KeyClicked Key
   | CreateAction Key
   | SetKeyAction Key Action
+  | SetLayer Int
   | Download

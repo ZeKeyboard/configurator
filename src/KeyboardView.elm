@@ -59,7 +59,7 @@ keyView key layerIndex selectedKey =
         , class "keyContainer"
         , onClick <| Messages.KeyClicked <| key
         ]
-      [ div [ class "keyText" ] [ text keyText ] 
+      [ div [ class "keyText" ] [ text keyText ]
       ]
 
 
