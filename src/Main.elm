@@ -63,6 +63,14 @@ update msg model =
       in
         ({ model | layout = Keyboard.updateKeyInLayout model.layout newKey
         , selectedKey = Just newKey }, Cmd.none)
+    Messages.SetLayerModifier key keyCode ->
+      let
+        newKey =
+          Keyboard.setLayerModifier key keyCode
+      in
+        ({ model | layout = Keyboard.updateKeyInLayout model.layout newKey
+        , selectedKey = Just newKey }, Cmd.none)
+
     Messages.SetLayer index ->
       ({ model | currentLayerIndex = index }, Cmd.none)
     Messages.Download ->
@@ -77,7 +85,7 @@ view model =
         Nothing ->
           text "Please select a key"
         Just key ->
-          inputView (Keyboard.selectedLayerAction key model.currentLayerIndex) key
+          inputView key model.currentLayerIndex
   in
     UI.configuratorView
       (viewControl model.currentLayerIndex)

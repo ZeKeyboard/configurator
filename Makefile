@@ -11,6 +11,9 @@ src/Generated/Layout.elm: $(KEYBOARD_LAYOUT_JSON) $(GENERATE_LAYOUT)
 public/main.js: src/Generated/Layout.elm $(wildcard src/*.elm) $(wildcard src/**/*.elm)
 	elm make src/Main.elm --output $@
 
+open: public/main.js
+	open public/index.html
+
 clean:
 	rm -rf src/Generated
 	rm -f index.html

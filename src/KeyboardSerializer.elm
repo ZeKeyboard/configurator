@@ -5,6 +5,7 @@ import Bytes.Encode as Encode
 import Keyboard exposing (Key, Layout, KeyCode, KeyPress, Action)
 import Bitwise
 import KeyCodes
+import Keyboard exposing (KeyActions(..))
 
 
 encodeUint16 : Int -> Encode.Encoder
@@ -42,6 +43,11 @@ encodeUint16AsAscii value =
 encodeKey : Key -> List Int
 encodeKey key =
   let
+    encodeLayerModifierAction code =
+      [ 0
+      , key.row
+      , key.col
+      ] ++ (encodeSingleAction code)
     encodeMaybeAction maybeAction layer =
       case maybeAction of
         Just action ->
@@ -53,9 +59,13 @@ encodeKey key =
         Nothing ->
           [ ]
   in
-    (encodeMaybeAction key.actionLayer1 0)
-    ++ (encodeMaybeAction key.actionLayer2 1)
-    ++ (encodeMaybeAction key.actionLayer3 2)
+    case key.actions of
+      LayerModifier code ->
+        encodeLayerModifierAction code
+      LayerAction layers ->
+        (encodeMaybeAction layers.actionLayer1 0)
+        ++ (encodeMaybeAction layers.actionLayer2 1)
+        ++ (encodeMaybeAction layers.actionLayer3 2)
 
 
 encodeAction : Action -> List Int
@@ -139,7 +149,7 @@ charToKeyPress char =
       KeyCodes.asciiCharToKeyCode lowerChar
 
   in
-    Maybe.map (\k -> 
+    Maybe.map (\k ->
       { key = k
       , modifier = modifier
       , media = KeyCodes.blankMediaKeyCode
@@ -164,21 +174,24 @@ serializeLayout : Layout -> String
 serializeLayout layout =
   let
     numKeys =
-      List.foldl (\keyPress sum ->
+      List.foldl (\key sum ->
         let
           countMaybe maybeAction =
             case maybeAction of
               Just _ -> 1
               Nothing -> 0
         in
-          sum + (countMaybe keyPress.actionLayer1)
-              + (countMaybe keyPress.actionLayer2)
-              + (countMaybe keyPress.actionLayer3)
+          case key.actions of
+            LayerModifier _ -> sum + 1
+            LayerAction layers ->
+              sum + (countMaybe layers.actionLayer1)
+                  + (countMaybe layers.actionLayer2)
+                  + (countMaybe layers.actionLayer3)
         ) 0 layout
 
     keysIntSequence =
       List.concatMap encodeKey layout
-    
+
     keysCheckSum =
       Basics.modBy 65500 (List.sum keysIntSequence)
 

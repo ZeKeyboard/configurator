@@ -9,6 +9,8 @@ import Messages exposing (Msg)
 import Keyboard exposing (selectedLayerAction)
 import KeyCodes exposing (keyCodeToString)
 import Keyboard exposing (Action(..))
+import Keyboard exposing (KeyActions(..))
+import KeyCodes exposing (layerModifierCodeToString)
 
 
 keyboardView : Layout -> Int -> Maybe Key -> Html Msg
@@ -32,17 +34,19 @@ keyboardView layout layerIndex selectedKey =
 keyView : Key -> Int -> Maybe Key -> Html Msg
 keyView key layerIndex selectedKey =
   let
-    maybeAction =
-      selectedLayerAction key layerIndex
     keyText =
-      case maybeAction of
-        Nothing ->
-          ""
-        Just action ->
-          case action of
-            Single keyCode ->
-              keyCodeToString keyCode
-            _ -> "[..]"
+      case key.actions of
+        LayerModifier keyCode ->
+          layerModifierCodeToString keyCode
+        LayerAction layers ->
+          case selectedLayerAction layers layerIndex of
+            Nothing ->
+              ""
+            Just action ->
+              case action of
+                Single keyCode ->
+                  keyCodeToString keyCode
+                _ -> "[..]"
 
     x = keyX key
     y = keyY key

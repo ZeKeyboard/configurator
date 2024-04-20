@@ -19,6 +19,18 @@ type Action
   | FreeText String
 
 
+type alias Layers =
+  { actionLayer1 : Maybe Action
+  , actionLayer2 : Maybe Action
+  , actionLayer3 : Maybe Action
+  }
+
+
+type KeyActions
+  = LayerModifier KeyCode  -- the exact layer code
+  | LayerAction Layers
+
+
 type alias Key =
   { id : Int
   , row : Int
@@ -27,23 +39,21 @@ type alias Key =
   , y : Float
   , height : Float
   , width : Float
-  , actionLayer1 : Maybe Action
-  , actionLayer2 : Maybe Action
-  , actionLayer3 : Maybe Action
+  , actions : KeyActions
   }
 
 
 type alias Layout = List Key
 
 
-selectedLayerAction : Key -> Int -> Maybe Action
-selectedLayerAction key layerIndex =
+selectedLayerAction : Layers -> Int -> Maybe Action
+selectedLayerAction layers layerIndex =
   if layerIndex == 0 then
-    key.actionLayer1
+    layers.actionLayer1
   else if layerIndex == 1 then
-    key.actionLayer2
+    layers.actionLayer2
   else if layerIndex == 2 then
-    key.actionLayer3
+    layers.actionLayer3
   else
     Nothing
 
@@ -67,14 +77,56 @@ createNewAction layout key =
 
 setKeyAction : Key -> Int -> Maybe Action -> Key
 setKeyAction key layerIndex maybeAction =
+  let
+    blankLayers =
+      { actionLayer1 = Nothing
+      , actionLayer2 = Nothing
+      , actionLayer3 = Nothing
+      }
+    newLayers =
+      setLayerAction layerIndex blankLayers maybeAction
+  in
+    case key.actions of
+      LayerModifier _ ->
+        { key | actions = LayerAction newLayers }
+      LayerAction layers ->
+        { key | actions = LayerAction <| setLayerAction layerIndex layers maybeAction }
+
+
+setLayerModifier : Key -> KeyCode -> Key
+setLayerModifier key keyCode =
+  { key | actions = LayerModifier keyCode }
+
+
+setLayerAction : Int -> Layers -> Maybe Action -> Layers
+setLayerAction layerIndex layers maybeAction =
   if layerIndex == 0 then
-    { key | actionLayer1 = maybeAction }
+    { layers | actionLayer1 = maybeAction }
   else if layerIndex == 1 then
-    { key | actionLayer2 = maybeAction }
+    { layers | actionLayer2 = maybeAction }
   else if layerIndex == 2 then
-    { key | actionLayer3 = maybeAction }
+    { layers | actionLayer3 = maybeAction }
   else
-    key
+    layers
+
+
+isKeyBlank : Key -> Int -> Bool
+isKeyBlank key layerIndex =
+  case key.actions of
+    LayerModifier _ ->
+      False
+    LayerAction layers ->
+      case selectedLayerAction layers layerIndex of
+        Just action ->
+          case action of
+            Single _ ->
+              False
+            Sequence _ _ _ ->
+              False
+            FreeText _ ->
+              False
+        Nothing ->
+          True
 
 
 updateKeyInLayout : Layout -> Key -> Layout

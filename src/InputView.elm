@@ -1,5 +1,5 @@
 module InputView exposing (inputView)
-import Keyboard exposing (KeyCode, KeyPress, Action(..), Key, defaultSingleAction, defaultSequenceAction, defaultFreeTextAction)
+import Keyboard exposing (KeyCode, KeyPress, Layers, Action(..), Key, defaultSingleAction, defaultSequenceAction, defaultFreeTextAction)
 import Messages exposing (Msg)
 import Css exposing (..)
 import Html.Styled exposing (..)
@@ -8,34 +8,49 @@ import Html.Styled.Events exposing (onClick)
 import Html.Styled.Attributes exposing (css, for, name, value, class, selected)
 import Html.Styled.Events exposing (onInput)
 import KeyCodes exposing (..)
+import Keyboard exposing (KeyActions(..))
+import Dict exposing (keys)
+import Bitwise exposing (or)
 
 
-inputView : Maybe Action -> Key -> Html Msg
-inputView maybeAction key =
-  case maybeAction of
-    Nothing ->
-      div [] [ button [ onClick <| Messages.CreateAction key ] [ "New action" |> text ] ]
-    Just action ->
-      actionInput action key
+inputView : Key -> Int -> Html Msg
+inputView key layerIndex =
+  if Keyboard.isKeyBlank key layerIndex then
+    div [] [ button [ onClick <| Messages.CreateAction key ] [ "New action" |> text ] ]
+  else
+    actionInput key layerIndex
 
 
-actionInput : Action -> Key -> Html Msg
-actionInput action key =
+actionInput : Key -> Int -> Html Msg
+actionInput key currentLayerIndex =
   let
     singleActionString = "single"
     sequenceActionString = "sequence"
     freeActionString = "free"
+    layerActionString = "layer"
 
     selectedAction =
-      case action of
-        Single _ ->
-          singleActionString
+      case key.actions of
+        LayerModifier _ ->
+          layerActionString
+        LayerAction layers ->
+          let
+            maybeAction =
+              Keyboard.selectedLayerAction layers currentLayerIndex
+          in
+            case maybeAction of
+              Nothing ->
+                ""
+              Just action ->
+                case action of
+                  Single _ ->
+                    singleActionString
 
-        Sequence _ _ _ ->
-          sequenceActionString
+                  Sequence _ _ _ ->
+                    sequenceActionString
 
-        FreeText _ ->
-          freeActionString
+                  FreeText _ ->
+                    freeActionString
 
     actionInputToMessage str =
       case str of
@@ -47,6 +62,9 @@ actionInput action key =
 
         "free" ->
           Messages.SetKeyAction key defaultFreeTextAction
+
+        "layer" ->
+          Messages.SetLayerModifier key (or 1 layerHoldModifierKeyCode)
 
         _ ->
           Messages.SetKeyAction key defaultSingleAction
@@ -61,28 +79,64 @@ actionInput action key =
                  , selected (selectedAction == sequenceActionString) ] [ "Sequence" |> text ]
         , option [ value freeActionString
                  , selected (selectedAction == freeActionString) ] [ "Free text" |> text ]
+        , option [ value layerActionString
+                 , selected (selectedAction == layerActionString) ] [ "Layer Modifier" |> text ]
         ]
   in
     div []
-      [ label [ for "actionType" ] [ "Action type:" |> text ]
-      , actionDropdown
-      , valueInput action key
+      [ actionDropdown
+      , valueInput key currentLayerIndex
       , button [ class "inputViewControl"
                , onClick <| Messages.CreateAction key ] [ "Reset action" |> text ]
       ]
 
 
-valueInput : Action -> Key -> Html Msg
-valueInput action key =
-  case action of
-    Single keyCode ->
-      singleInput keyCode key
+valueInput : Key -> Int -> Html Msg
+valueInput key layerIndex =
+  case key.actions of
+    LayerModifier keyCode ->
+      layerModifierInput keyCode key
+    LayerAction layers ->
+      let
+        maybeAction =
+          Keyboard.selectedLayerAction layers layerIndex
+      in
+        case maybeAction of
+          Nothing ->
+            div [] [ ]
+          Just action ->
+            case action of
+              Single keyCode ->
+                singleInput keyCode key
 
-    Sequence rawString sequence maybeError ->
-      sequenceInput rawString sequence key maybeError
+              Sequence rawString sequence maybeError ->
+                sequenceInput rawString sequence key maybeError
 
-    FreeText freeText ->
-      freeTextInput freeText key
+              FreeText freeText ->
+                freeTextInput freeText key
+
+
+layerModifierInput : KeyCode -> Key -> Html Msg
+layerModifierInput keyCode key =
+  let
+    options codes =
+      List.map (\k -> option
+        [ k |> layerModifierCodeToString |> value
+        , selected (k == keyCode) ]
+        [ k |> layerModifierCodeToString |> text ])
+        codes
+
+    keyCodeConvert maybeCode =
+      case maybeCode of
+        Just c ->
+          c
+        Nothing ->
+          0
+  in
+    select [ name "actionType"
+           , class "keyDropdown inputViewControl"
+           , onInput <| \str -> Messages.SetLayerModifier key (layerModifierCodeFromString str |> keyCodeConvert) ]
+      ( layerModifierCodes |> Dict.keys |> options )
 
 
 parseKeyPress : List String -> Result String KeyPress

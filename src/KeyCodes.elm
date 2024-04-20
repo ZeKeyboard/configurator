@@ -315,28 +315,7 @@ keyCodes =
     , ((or 114  standardKeyCode), "F23"        )
     , ((or 115  standardKeyCode), "F24"        )
 
-    -- Layer hold codes
-    , ((or 0    layerHoldModifierKeyCode), "Layer Hold 0"     )
-    , ((or 1    layerHoldModifierKeyCode), "Layer Hold 1"     )
-    , ((or 2    layerHoldModifierKeyCode), "Layer Hold 2"     )
-
-    -- Layer toggle codes
-    , ((or 0    layerToggleModifierKeyCode), "Layer Toggle 0"     )
-    , ((or 1    layerToggleModifierKeyCode), "Layer Toggle 1"     )
-    , ((or 2    layerToggleModifierKeyCode), "Layer Toggle 2"     )
-
     -- Mouse controls
-    , ((or 0    mouseKeyCode), "Mouse Left Click"     )
-    , ((or 1    mouseKeyCode), "Mouse Right Click"    )
-    , ((or 2    mouseKeyCode), "Mouse Middle Click"   )
-    , ((or 3    mouseKeyCode), "Mouse Scroll Up"      )
-    , ((or 4    mouseKeyCode), "Mouse Scroll Down"    )
-    , ((or 5    mouseKeyCode), "Mouse Move Left"      )
-    , ((or 6    mouseKeyCode), "Mouse Move Right"     )
-    , ((or 7    mouseKeyCode), "Mouse Move Up"        )
-    , ((or 8    mouseKeyCode), "Mouse Move Down"      )
-    , ((or 9    mouseKeyCode), "Mouse Accelerate"    )
-
     -- Control key codes
     , ((or 0    controlKeyCode), "Brightness increase" )
     , ((or 1    controlKeyCode), "Brightness decrease" )
@@ -344,15 +323,50 @@ keyCodes =
     ]
 
 
+layerModifierCodes : Dict Int String
+layerModifierCodes =
+  Dict.fromList
+    [ ((or 1    layerHoldModifierKeyCode), "Layer Hold 1"     )
+    , ((or 2    layerHoldModifierKeyCode), "Layer Hold 2"     )
+
+    , ((or 1    layerToggleModifierKeyCode), "Layer Toggle 1" )
+    , ((or 2    layerToggleModifierKeyCode), "Layer Toggle 2" )
+    ]
+
+
+reverseDict : Dict Int String -> Dict String Int
+reverseDict dict =
+  Dict.fromList (List.map (\(k, v) -> (v, k)) (Dict.toList dict))
+
+
 keyCodesFromString : Dict String Int
 keyCodesFromString =
-  Dict.fromList
-    (List.map (\(k, v) -> (v, k)) (Dict.toList keyCodes))
+  reverseDict keyCodes
+
+
+layerModifierCodesFromString : Dict String Int
+layerModifierCodesFromString =
+  reverseDict layerModifierCodes
+
+
+layerModifierCodeFromString : String -> Maybe Int
+layerModifierCodeFromString str =
+    Dict.get str layerModifierCodesFromString
 
 
 keyCodeToString : Int -> String
 keyCodeToString keyCode =
     case Dict.get keyCode keyCodes of
+      Just str ->
+        str
+
+      Nothing ->
+        ""
+
+
+layerModifierCodeToString : Int -> String
+layerModifierCodeToString keyCode =
+    case Dict.get keyCode layerModifierCodes of
       Just str ->
         str
 

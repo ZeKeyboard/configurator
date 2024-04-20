@@ -1,6 +1,6 @@
 module Messages exposing (Msg(..))
 
-import Keyboard exposing (Action, Key)
+import Keyboard exposing (Action, Key, KeyCode)
 
 
 type Msg
@@ -8,4 +8,5 @@ type Msg
   | CreateAction Key
   | SetKeyAction Key Action
   | SetLayer Int
+  | SetLayerModifier Key KeyCode
   | Download
