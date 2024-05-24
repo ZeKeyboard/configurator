@@ -8,11 +8,6 @@ import KeyCodes
 import Keyboard exposing (KeyActions(..))
 
 
-encodeUint16 : Int -> Encode.Encoder
-encodeUint16 value =
-  Encode.unsignedInt16 Bytes.LE value
-
-
 byteToHexAscii : Int -> String
 byteToHexAscii byte =
   let

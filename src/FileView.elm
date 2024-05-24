@@ -6,6 +6,8 @@ import File.Download as Download
 
 import Messages exposing (Msg)
 import KeyboardSerializer
+import LayoutJSONEncoder exposing (encodeLayout)
+import LayoutJSONDecoder exposing (decodeLayout)
 import Model exposing (Model)
 
 
