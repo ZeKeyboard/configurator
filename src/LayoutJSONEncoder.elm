@@ -4,11 +4,9 @@ import Json.Encode as Encode
 import Keyboard exposing (Layout, Key, KeyPress, KeyActions(..), Action(..), KeyCode)
 
 
--- TODO du har inte testat något av detta än
-
-encodeLayout : Layout -> Encode.Value
+encodeLayout : Layout -> String
 encodeLayout layout =
-  Encode.list encodeKey layout
+  Encode.encode 4 (Encode.list encodeKey layout)
 
 
 encodeKey : Key -> Encode.Value

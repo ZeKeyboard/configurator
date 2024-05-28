@@ -1,6 +1,7 @@
 module Messages exposing (Msg(..))
 
 import Keyboard exposing (Action, Key, KeyCode)
+import File exposing (File)
 
 
 type Msg
@@ -9,4 +10,9 @@ type Msg
   | SetKeyAction Key Action
   | SetLayer Int
   | SetLayerModifier Key KeyCode
-  | Download
+  | Export
+  | Save
+  | FileRead String
+  | Open File
+  | ChangeName String
+  | SelectProjectFile

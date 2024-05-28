@@ -245,9 +245,9 @@ sequenceInput rawString keyPresses key maybeError =
   in
     span [] [ input [ class "inputViewControl"
                     , onInput <| onTextInput, value rawString ] []
-            , span [] [ text <| String.concat [ String.fromInt numValidKeyPresses
+            , span [ class "whiteText" ] [ text <| String.concat [ String.fromInt numValidKeyPresses
                                               , " key combinations." ] ]
-            , span [] [ text currentErrorText ] ]
+            , span [ class "whiteText" ] [ text currentErrorText ] ]
 
 
 freeTextInput : String -> Key -> Html Msg

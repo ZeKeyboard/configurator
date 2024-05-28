@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Html.Styled exposing (Html, Attribute, div, input, text)
+import Html.Styled exposing (Html, Attribute, div, input, text, span)
 import Html.Styled exposing (toUnstyled)
 import Html.Styled.Attributes exposing (..)
 import Html.Styled.Events exposing (onInput)
@@ -12,10 +12,12 @@ import Model exposing (Model)
 import KeyboardView exposing (keyboardView)
 import ViewControl exposing (viewControl)
 import InputView exposing (inputView)
-import FileView exposing (fileView, maybeDownloadFile)
+import FileView exposing (fileView, exportConfiguration)
+import File
 import Keyboard
 import UI
 import Browser exposing (application)
+import Task
 
 
 main : Program () Model Msg
@@ -37,7 +39,8 @@ init : flags -> (Model, Cmd Msg)
 init _ =
   ({ layout = initialLayout
    , currentLayerIndex = 0
-   , selectedKey = Nothing }, Cmd.none)
+   , selectedKey = Nothing
+   , name = "Untitled Configuration" }, Cmd.none)
 
 
 subscriptions : Model -> Sub Msg
@@ -73,8 +76,24 @@ update msg model =
 
     Messages.SetLayer index ->
       ({ model | currentLayerIndex = index }, Cmd.none)
-    Messages.Download ->
-      maybeDownloadFile model
+
+    Messages.Export ->
+      exportConfiguration model
+
+    Messages.Save->
+      FileView.saveProjectFile model
+
+    Messages.ChangeName name ->
+      ({ model | name = name }, Cmd.none)
+
+    Messages.SelectProjectFile ->
+      (model, FileView.selectProjectFile)
+
+    Messages.Open file ->
+      ({ model | name = File.name file }, Task.perform Messages.FileRead (File.toString file))
+
+    Messages.FileRead content ->
+      FileView.loadProjectFile content model
 
 
 view : Model -> Html Msg
@@ -83,13 +102,15 @@ view model =
     keyInputView =
       case model.selectedKey of
         Nothing ->
-          text "Please select a key"
+          span [ class "whiteText inputViewControl" ] [ text "Please select a key" ]
         Just key ->
           inputView key model.currentLayerIndex
+    totalView =
+      UI.configuratorView
+        model.name
+        (viewControl model.currentLayerIndex)
+        (keyboardView model.layout model.currentLayerIndex model.selectedKey)
+        keyInputView
+        (fileView model.name)
   in
-    UI.configuratorView
-      (viewControl model.currentLayerIndex)
-      (keyboardView model.layout model.currentLayerIndex model.selectedKey)
-      keyInputView
-      fileView
-
+    totalView

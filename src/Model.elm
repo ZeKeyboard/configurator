@@ -7,4 +7,5 @@ type alias Model =
   { layout : Layout
   , currentLayerIndex : Int
   , selectedKey : Maybe Key
+  , name : String
   }

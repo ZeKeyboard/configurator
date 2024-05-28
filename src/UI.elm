@@ -1,17 +1,17 @@
 module UI exposing (configuratorView)
 
 import Css exposing (..)
-import Html
 import Messages exposing (Msg)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (css)
+import Html.Styled.Attributes exposing (class)
 import ViewControl exposing (viewControl)
 
 
-configuratorView : Html Msg -> Html Msg -> Html Msg -> Html Msg -> Html Msg
-configuratorView viewControl keyboardView inputView fileView =
+configuratorView : String -> Html Msg -> Html Msg -> Html Msg -> Html Msg -> Html Msg
+configuratorView name viewControl keyboardView inputView fileView =
     div [ ]
-        [ viewControl
+        [ h1 [ class "whiteText" ] [ text name ]
+        , viewControl
         , keyboardView
         , inputView
         , fileView

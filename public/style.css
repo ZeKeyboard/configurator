@@ -14,6 +14,10 @@ html {
     margin: 2px;
 }
 
+.whiteText {
+    color: white;
+}
+
 .keyDropdown {
     width: 100px;
 }
@@ -24,4 +28,12 @@ html {
 
 .layerViewControl {
     margin: 2px;
+}
+
+.fileViewControl {
+    margin: 2px;
+}
+
+.primaryButton {
+    margin-right: 2px;
 }
