@@ -8,4 +8,5 @@ type alias Model =
   , currentLayerIndex : Int
   , selectedKey : Maybe Key
   , name : String
+  , hovering : Bool
   }

@@ -16,3 +16,6 @@ type Msg
   | Open File
   | ChangeName String
   | SelectProjectFile
+  | DragEnter
+  | DragLeave
+  | DroppedFiles File (List File)

@@ -40,7 +40,8 @@ init _ =
   ({ layout = initialLayout
    , currentLayerIndex = 0
    , selectedKey = Nothing
-   , name = "Untitled Configuration" }, Cmd.none)
+   , name = "Untitled Configuration"
+   , hovering = False }, Cmd.none)
 
 
 subscriptions : Model -> Sub Msg
@@ -95,6 +96,15 @@ update msg model =
     Messages.FileRead content ->
       FileView.loadProjectFile content model
 
+    Messages.DragEnter ->
+      ({ model | hovering = True }, Cmd.none)
+
+    Messages.DragLeave ->
+      ({ model | hovering = False }, Cmd.none)
+
+    Messages.DroppedFiles file _ ->
+      ({ model | hovering = False, name = File.name file }, Task.perform Messages.FileRead (File.toString file))
+
 
 view : Model -> Html Msg
 view model =
@@ -108,8 +118,9 @@ view model =
     totalView =
       UI.configuratorView
         model.name
+        model.hovering
         (viewControl model.currentLayerIndex)
-        (keyboardView model.layout model.currentLayerIndex model.selectedKey)
+        (keyboardView model.layout model.currentLayerIndex model.selectedKey model.hovering)
         keyInputView
         (fileView model.name)
   in
