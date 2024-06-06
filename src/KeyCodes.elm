@@ -316,21 +316,33 @@ keyCodes =
     , ((or 115  standardKeyCode), "F24"        )
 
     -- Mouse controls
+    , ((or 116  mouseKeyCode), "Mouse Left Click"   )
+    , ((or 117  mouseKeyCode), "Mouse Right Click"  )
+    , ((or 118  mouseKeyCode), "Mouse Middle Click" )
+    , ((or 119  mouseKeyCode), "Mouse Scroll Up"    )
+    , ((or 120  mouseKeyCode), "Mouse Scroll Down"  )
+    , ((or 121  mouseKeyCode), "Mouse Move Left"    )
+    , ((or 122  mouseKeyCode), "Mouse Move Right"   )
+    , ((or 123  mouseKeyCode), "Mouse Move Up"      )
+    , ((or 124  mouseKeyCode), "Mouse Move Down"    )
+    , ((or 125  mouseKeyCode), "Mouse Move Faster"  )
+
     -- Control key codes
-    , ((or 0    controlKeyCode), "Brightness increase" )
-    , ((or 1    controlKeyCode), "Brightness decrease" )
-    , ((or 2    controlKeyCode), "Toggle configuration mode" )
+    , ((or 126    controlKeyCode), "Brightness increase" )
+    , ((or 127    controlKeyCode), "Brightness decrease" )
+    , ((or 128    controlKeyCode), "Toggle configuration mode" )
+    , ((or 129    controlKeyCode), "Next backlight mode" )
     ]
 
 
 layerModifierCodes : Dict Int String
 layerModifierCodes =
   Dict.fromList
-    [ ((or 1    layerHoldModifierKeyCode), "Layer Hold 1"     )
-    , ((or 2    layerHoldModifierKeyCode), "Layer Hold 2"     )
+    [ ((or 130    layerHoldModifierKeyCode), "Layer Hold 1" )
+    , ((or 131    layerHoldModifierKeyCode), "Layer Hold 2" )
 
-    , ((or 1    layerToggleModifierKeyCode), "Layer Toggle 1" )
-    , ((or 2    layerToggleModifierKeyCode), "Layer Toggle 2" )
+    , ((or 133    layerToggleModifierKeyCode), "Layer Toggle 1" )
+    , ((or 134    layerToggleModifierKeyCode), "Layer Toggle 2" )
     ]
 
 
