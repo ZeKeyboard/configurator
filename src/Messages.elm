@@ -19,3 +19,5 @@ type Msg
   | DragEnter
   | DragLeave
   | DroppedFiles File (List File)
+  | UpdateIntegerSetting Int Int Int String
+  | UpdateBooleanSetting Int Bool

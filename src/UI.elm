@@ -12,8 +12,8 @@ import File
 import Json.Decode as Decode
 
 
-configuratorView : String -> Bool -> Html Msg -> Html Msg -> Html Msg -> Html Msg -> Html Msg
-configuratorView name hovering viewControl keyboardView inputView fileView =
+configuratorView : String -> Bool -> Html Msg -> Html Msg -> Html Msg -> Html Msg -> Html Msg -> Html Msg
+configuratorView name hovering viewControl keyboardView inputView fileView settingsView =
   div
     [ hijackOn "dragenter" (Decode.succeed Messages.DragEnter)
     , hijackOn "dragover" (Decode.succeed Messages.DragEnter)
@@ -25,6 +25,7 @@ configuratorView name hovering viewControl keyboardView inputView fileView =
     , keyboardView
     , inputView
     , fileView
+    , settingsView
     ]
 
 

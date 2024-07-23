@@ -37,3 +37,7 @@ html {
 .primaryButton {
     margin-right: 2px;
 }
+
+.integerSpinner {
+    width: 50px;
+}

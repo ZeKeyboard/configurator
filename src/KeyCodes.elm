@@ -338,11 +338,11 @@ keyCodes =
 layerModifierCodes : Dict Int String
 layerModifierCodes =
   Dict.fromList
-    [ ((or 130    layerHoldModifierKeyCode), "Layer Hold 1" )
-    , ((or 131    layerHoldModifierKeyCode), "Layer Hold 2" )
+    [ ((or 130    layerHoldModifierKeyCode), "Layer Hold 2" )
+    , ((or 131    layerHoldModifierKeyCode), "Layer Hold 3" )
 
-    , ((or 133    layerToggleModifierKeyCode), "Layer Toggle 1" )
-    , ((or 134    layerToggleModifierKeyCode), "Layer Toggle 2" )
+    , ((or 133    layerToggleModifierKeyCode), "Layer Toggle 2" )
+    , ((or 134    layerToggleModifierKeyCode), "Layer Toggle 3" )
     ]
 
 

@@ -13,6 +13,8 @@ import KeyboardView exposing (keyboardView)
 import ViewControl exposing (viewControl)
 import InputView exposing (inputView)
 import FileView exposing (fileView, exportConfiguration)
+import SettingsView exposing (settingsView)
+import Settings exposing (updateIntegerSetting, updateBooleanSetting)
 import File
 import Keyboard
 import UI
@@ -38,6 +40,7 @@ main =
 init : flags -> (Model, Cmd Msg)
 init _ =
   ({ layout = initialLayout
+   , settings = Settings.initialSettings
    , currentLayerIndex = 0
    , selectedKey = Nothing
    , name = "Untitled Configuration"
@@ -105,6 +108,19 @@ update msg model =
     Messages.DroppedFiles file _ ->
       ({ model | hovering = False, name = File.name file }, Task.perform Messages.FileRead (File.toString file))
 
+    Messages.UpdateIntegerSetting settingNumber minValue maxValue value ->
+      let
+        valueInt = Maybe.withDefault 0 (String.toInt value)
+        newSettings = Settings.updateIntegerSetting settingNumber valueInt minValue maxValue model.settings
+      in
+        ({ model | settings = newSettings }, Cmd.none)
+
+    Messages.UpdateBooleanSetting settingNumber value ->
+      let
+        newSettings = Settings.updateBooleanSetting settingNumber value model.settings
+      in
+        ({ model | settings = newSettings }, Cmd.none)
+
 
 view : Model -> Html Msg
 view model =
@@ -123,5 +139,6 @@ view model =
         (keyboardView model.layout model.currentLayerIndex model.selectedKey model.hovering)
         keyInputView
         (fileView model.name)
+        (settingsView model.settings)
   in
     totalView
