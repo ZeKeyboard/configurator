@@ -9,8 +9,8 @@ import File exposing (File)
 
 import Messages exposing (Msg)
 import KeyboardSerializer
-import LayoutJSONEncoder exposing (encodeLayout)
-import LayoutJSONDecoder exposing (decodeLayout)
+import LayoutJSONEncoder exposing (encodeModel)
+import LayoutJSONDecoder exposing (decodeModel)
 import Model exposing (Model)
 import Html.Styled.Attributes exposing (placeholder)
 import Messages exposing (Msg(..))
@@ -28,16 +28,16 @@ exportConfiguration model =
 saveProjectFile : Model -> (Model, Cmd Msg)
 saveProjectFile model =
   let
-    json = encodeLayout model.layout
+    json = encodeModel model
   in
     (model, Download.string (model.name ++ ".json") "application/json" json)
 
 
 loadProjectFile : String -> Model -> (Model, Cmd Msg)
 loadProjectFile content model =
-  case decodeLayout content of
-    Ok layout ->
-      ( { model | layout = layout }, Cmd.none )
+  case decodeModel content model.name of
+    Ok newModel ->
+      ( newModel, Cmd.none )
 
     Err _ ->
       ( model, Cmd.none )

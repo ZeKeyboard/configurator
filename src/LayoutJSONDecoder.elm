@@ -1,21 +1,83 @@
-module LayoutJSONDecoder exposing (decodeLayout)
+module LayoutJSONDecoder exposing (decodeModel)
 
 import Json.Decode as Decode
 import Keyboard exposing (Layout, Layers, Key, KeyPress, KeyActions(..), Action(..), KeyCode)
+import Model exposing (Model)
+import Settings exposing (Settings, SettingsGroup)
+import Settings exposing (SettingsField)
+import Settings exposing (SettingsField(..))
 
 
-decodeLayout : String -> Result String Layout
-decodeLayout json =
+decodeModel : String -> String -> Result String Model
+decodeModel json name =
   let
     result =
-      Decode.decodeString layoutDecoder json
+      Decode.decodeString (modelDecoder name) json
   in
     case result of
-      Ok layout ->
-        Ok layout
+      Ok model ->
+        Ok model
 
       Err err ->
         Err (Decode.errorToString err)
+
+
+modelDecoder : String -> Decode.Decoder Model
+modelDecoder name =
+  Decode.map6 Model
+    (Decode.field "layout" layoutDecoder)
+    (Decode.field "settings" settingsDecoder)
+    (Decode.succeed 0)
+    (Decode.succeed Nothing)
+    (Decode.succeed name)
+    (Decode.succeed False)
+
+
+settingsDecoder : Decode.Decoder Settings
+settingsDecoder =
+  Decode.list settingsGroupDecoder
+
+
+settingsGroupDecoder : Decode.Decoder SettingsGroup
+settingsGroupDecoder =
+  Decode.map2 SettingsGroup
+    (Decode.field "name" Decode.string)
+    (Decode.field "settings" settingsTupleListDecoder)
+
+
+settingsTupleListDecoder : Decode.Decoder (List (Int, String, SettingsField))
+settingsTupleListDecoder =
+  Decode.list settingsTupleDecoder
+
+
+settingsTupleDecoder : Decode.Decoder (Int, String, SettingsField)
+settingsTupleDecoder =
+  Decode.map3 (\a b c -> (a, b, c))
+    (Decode.field "id" Decode.int)
+    (Decode.field "name" Decode.string)
+    (Decode.field "field" settingsFieldDecoder)
+
+
+settingsFieldDecoder : Decode.Decoder SettingsField
+settingsFieldDecoder =
+  Decode.oneOf
+    [ integerSettingsFieldDecoder
+    , booleanSettingsFieldDecoder
+    ]
+
+
+integerSettingsFieldDecoder : Decode.Decoder SettingsField
+integerSettingsFieldDecoder =
+  Decode.map3 IntegerField
+    (Decode.field "value" Decode.int)
+    (Decode.field "min" Decode.int)
+    (Decode.field "max" Decode.int)
+
+
+booleanSettingsFieldDecoder : Decode.Decoder SettingsField
+booleanSettingsFieldDecoder =
+  Decode.map BooleanField
+    (Decode.field "value" Decode.bool)
 
 
 layoutDecoder : Decode.Decoder Layout

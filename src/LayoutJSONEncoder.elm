@@ -1,12 +1,24 @@
-module LayoutJSONEncoder exposing (encodeLayout)
+module LayoutJSONEncoder exposing (encodeModel)
 
 import Json.Encode as Encode
 import Keyboard exposing (Layout, Key, KeyPress, KeyActions(..), Action(..), KeyCode)
+import Settings exposing (Settings, SettingsGroup, SettingsField)
+import Settings exposing (SettingsField(..))
+import Model exposing (Model)
 
 
-encodeLayout : Layout -> String
+encodeModel : Model -> String
+encodeModel model =
+  Encode.encode 4
+    (Encode.object
+      [ ("layout", encodeLayout model.layout)
+      , ("settings", encodeSettings model.settings)
+      ])
+
+
+encodeLayout : Layout -> Encode.Value
 encodeLayout layout =
-  Encode.encode 4 (Encode.list encodeKey layout)
+  Encode.list encodeKey layout
 
 
 encodeKey : Key -> Encode.Value
@@ -88,4 +100,45 @@ encodeKeyPress press =
 encodeFreeText : String -> Encode.Value
 encodeFreeText text =
   Encode.string text
+
+
+encodeSettings : Settings -> Encode.Value
+encodeSettings settings =
+  Encode.list encodeSettingsGroup settings
+
+
+encodeSettingsGroup : SettingsGroup -> Encode.Value
+encodeSettingsGroup group =
+  Encode.object
+    [ ("name", Encode.string group.name)
+    , ("settings", encodeSettingsList group.settings)
+    ]
+
+
+encodeSettingsList : List (Int, String, SettingsField) -> Encode.Value
+encodeSettingsList settings =
+  Encode.list encodeSettingsTuple settings
+
+
+encodeSettingsTuple : (Int, String, SettingsField) -> Encode.Value
+encodeSettingsTuple (id, name, field) =
+  Encode.object
+    [ ("id", Encode.int id)
+    , ("name", Encode.string name)
+    , ("field", encodeSettingsField field)
+    ]
+
+
+encodeSettingsField : SettingsField -> Encode.Value
+encodeSettingsField field =
+  case field of
+    IntegerField value min max->
+      Encode.object
+        [ ("value", Encode.int value)
+        , ("min", Encode.int min)
+        , ("max", Encode.int max)
+        ]
+    BooleanField value ->
+      Encode.object
+        [ ("value", Encode.bool value) ]
 
