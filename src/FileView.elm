@@ -19,8 +19,14 @@ import Messages exposing (Msg(..))
 exportConfiguration : Model -> (Model, Cmd Msg)
 exportConfiguration model =
   let
-    serializedContent =
+    serializedLayout =
       KeyboardSerializer.serializeLayout model.layout
+
+    serializedSettings =
+      KeyboardSerializer.serializeSettings model.settings
+
+    serializedContent =
+      serializedLayout ++ serializedSettings
   in
     (model, Download.string (model.name ++ ".zkb") "text/plain" serializedContent)
 

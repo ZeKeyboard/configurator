@@ -1,4 +1,4 @@
-module KeyboardSerializer exposing (serializeLayout)
+module KeyboardSerializer exposing (serializeLayout, serializeSettings)
 
 import Bytes exposing (Bytes)
 import Bytes.Encode as Encode
@@ -6,6 +6,13 @@ import Keyboard exposing (Key, Layout, KeyCode, KeyPress, Action)
 import Bitwise
 import KeyCodes
 import Keyboard exposing (KeyActions(..))
+import Settings exposing (Settings)
+import Settings exposing (SettingsGroup)
+import Settings exposing (SettingsField(..))
+
+
+settingsStartWord : String
+settingsStartWord = "DEADBEEFDEADBEEF"
 
 
 byteToHexAscii : Int -> String
@@ -191,8 +198,41 @@ serializeLayout layout =
       Basics.modBy 65500 (List.sum keysIntSequence)
 
     keysBytes =
-        [ encodeUint16AsAscii numKeys, encodeUint16AsAscii keysCheckSum ]
-          ++ (List.map encodeUint16AsAscii keysIntSequence)
+      [ encodeUint16AsAscii numKeys, encodeUint16AsAscii keysCheckSum ]
+        ++ (List.map encodeUint16AsAscii keysIntSequence)
   in
     String.concat keysBytes
 
+
+serializeSettings : Settings -> String
+serializeSettings settings =
+  let
+    settingsList = List.map serializeSettingsGroup settings
+    settingsListFlat = List.concat settingsList
+    numSettings = (List.length settingsListFlat) // 2
+    checkSum = Basics.modBy 65500 (List.sum settingsListFlat)
+    settingsAscii = List.map encodeUint16AsAscii settingsListFlat
+  in
+    settingsStartWord
+    ++ encodeUint16AsAscii numSettings
+    ++ encodeUint16AsAscii checkSum
+    ++ (String.concat settingsAscii)
+
+
+serializeSettingsGroup : SettingsGroup -> List Int
+serializeSettingsGroup group =
+  let
+    settingsList =
+      List.concatMap serializeSetting group.settings
+  in
+    settingsList
+
+
+serializeSetting : (Int, String, SettingsField) -> List Int
+serializeSetting (settingNumber, _, field) =
+  let
+    value = case field of
+      IntegerField v _ _ -> v
+      BooleanField v -> if v then 1 else 0
+  in
+    [ settingNumber, value ]
