@@ -63,6 +63,12 @@ update msg model =
       in
         ({ model | layout = Keyboard.createNewAction model.layout newKey
                 , selectedKey = Just newKey } , Cmd.none)
+    Messages.ResetAction key ->
+      let
+        newKey = Keyboard.setKeyAction key model.currentLayerIndex Nothing
+      in
+        ({ model | layout = Keyboard.updateKeyInLayout model.layout newKey
+                , selectedKey = Just newKey } , Cmd.none)
     Messages.SetKeyAction key action ->
       let
         newKey =

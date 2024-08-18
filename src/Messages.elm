@@ -7,6 +7,7 @@ import File exposing (File)
 type Msg
   = KeyClicked Key
   | CreateAction Key
+  | ResetAction Key
   | SetKeyAction Key Action
   | SetLayer Int
   | SetLayerModifier Key KeyCode

@@ -87,7 +87,7 @@ actionInput key currentLayerIndex =
       [ actionDropdown
       , valueInput key currentLayerIndex
       , button [ class "inputViewControl"
-               , onClick <| Messages.CreateAction key ] [ "Reset action" |> text ]
+               , onClick <| Messages.ResetAction key ] [ "Reset action" |> text ]
       ]
 
 
