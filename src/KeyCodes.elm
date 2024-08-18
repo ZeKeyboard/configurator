@@ -353,7 +353,22 @@ reverseDict dict =
 
 keyCodesFromString : Dict String Int
 keyCodesFromString =
-  reverseDict keyCodes
+  Dict.union
+    (reverseDict keyCodes)
+    (Dict.fromList
+      [ ("Ctrl", or 0x01 modifierKeyCode)
+      , ("Shift", or 0x02 modifierKeyCode)
+      , ("Alt", or 0x04 modifierKeyCode)
+      , ("Gui", or 0x08 modifierKeyCode)
+      , ("Win", or 0x08 modifierKeyCode)
+      , ("Super", or 0x08 modifierKeyCode)
+      , ("ctrl", or 0x01 modifierKeyCode)
+      , ("shift", or 0x02 modifierKeyCode)
+      , ("alt", or 0x04 modifierKeyCode)
+      , ("gui", or 0x08 modifierKeyCode)
+      , ("win", or 0x08 modifierKeyCode)
+      , ("super", or 0x08 modifierKeyCode)
+      ])
 
 
 layerModifierCodesFromString : Dict String Int
@@ -363,29 +378,29 @@ layerModifierCodesFromString =
 
 layerModifierCodeFromString : String -> Maybe Int
 layerModifierCodeFromString str =
-    Dict.get str layerModifierCodesFromString
+  Dict.get str layerModifierCodesFromString
 
 
 keyCodeToString : Int -> String
 keyCodeToString keyCode =
-    case Dict.get keyCode keyCodes of
-      Just str ->
-        str
+  case Dict.get keyCode keyCodes of
+    Just str ->
+      str
 
-      Nothing ->
-        ""
+    Nothing ->
+      ""
 
 
 layerModifierCodeToString : Int -> String
 layerModifierCodeToString keyCode =
-    case Dict.get keyCode layerModifierCodes of
-      Just str ->
-        str
+  case Dict.get keyCode layerModifierCodes of
+    Just str ->
+      str
 
-      Nothing ->
-        ""
+    Nothing ->
+      ""
 
 
 keyCodeFromString : String -> Maybe Int
 keyCodeFromString str =
-    Dict.get str keyCodesFromString
+  Dict.get str keyCodesFromString
