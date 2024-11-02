@@ -1,0 +1,24 @@
+name: Build configurator
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+    - name: Install elm, elm-format and cache the ELM_HOME directory
+      uses: mpizenberg/elm-tooling-action@v1.2
+      with:
+        cache-key: elm-home-${{ hashFiles('elm-tooling.json', 'elm.json') }}
+    - name: Compile
+      run: make
