@@ -1,0 +1,43 @@
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.keyContainer {
+    position: absolute;
+    cursor: pointer;
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 5px;
+}
+
+.keyText {
+    margin: 2px;
+}
+
+.whiteText {
+    color: white;
+}
+
+.keyDropdown {
+    width: 100px;
+}
+
+.inputViewControl {
+    margin: 2px;
+}
+
+.layerViewControl {
+    margin: 2px;
+}
+
+.fileViewControl {
+    margin: 2px;
+}
+
+.primaryButton {
+    margin-right: 2px;
+}
+
+.integerSpinner {
+    width: 50px;
+}

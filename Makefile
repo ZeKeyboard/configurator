@@ -14,6 +14,9 @@ public/main.js: src/Generated/Layout.elm $(wildcard src/*.elm) $(wildcard src/**
 open: public/main.js
 	open public/index.html
 
+deploy: $(wildcard public/*.*)
+	cp -r public/* docs/
+
 clean:
 	rm -rf src/Generated
 	rm -f index.html
