@@ -11,18 +11,19 @@ import KeyCodes exposing (..)
 import Keyboard exposing (KeyActions(..))
 import Dict exposing (keys)
 import Bitwise exposing (or)
+import Language exposing (Language)
 
 
-inputView : Key -> Int -> Html Msg
-inputView key layerIndex =
+inputView : Key -> Int -> Language -> Html Msg
+inputView key layerIndex language =
   if Keyboard.isKeyBlank key layerIndex then
     div [] [ button [ onClick <| Messages.CreateAction key ] [ "New action" |> text ] ]
   else
-    actionInput key layerIndex
+    actionInput key layerIndex language
 
 
-actionInput : Key -> Int -> Html Msg
-actionInput key currentLayerIndex =
+actionInput : Key -> Int -> Language -> Html Msg
+actionInput key currentLayerIndex language =
   let
     singleActionString = "single"
     sequenceActionString = "sequence"
@@ -85,14 +86,14 @@ actionInput key currentLayerIndex =
   in
     div []
       [ actionDropdown
-      , valueInput key currentLayerIndex
+      , valueInput key currentLayerIndex language
       , button [ class "inputViewControl"
                , onClick <| Messages.ResetAction key ] [ "Reset action" |> text ]
       ]
 
 
-valueInput : Key -> Int -> Html Msg
-valueInput key layerIndex =
+valueInput : Key -> Int -> Language -> Html Msg
+valueInput key layerIndex language =
   case key.actions of
     LayerModifier keyCode ->
       layerModifierInput keyCode key
@@ -107,7 +108,7 @@ valueInput key layerIndex =
           Just action ->
             case action of
               Single keyCode ->
-                singleInput keyCode key
+                singleInput keyCode key language
 
               Sequence rawString sequence maybeError ->
                 sequenceInput rawString sequence key maybeError
@@ -256,8 +257,8 @@ freeTextInput text key =
                         , value text, css [ width (px 200) ] ] []
 
 
-singleInput : KeyCode -> Key -> Html Msg
-singleInput keyCode key =
+singleInput : KeyCode -> Key -> Language -> Html Msg
+singleInput keyCode key language =
   let
     allCodes =
       (Dict.keys keyCodes)
@@ -284,9 +285,9 @@ singleInput keyCode key =
 
     options codes =
       List.map (\k -> option
-        [ k |> keyCodeToString |> value
+        [ keyCodeToString k language |> value
         , selected (k == keyCode) ]
-        [ k |> keyCodeToString |> text ])
+        [ keyCodeToString k language |> text ])
         codes
 
     keyCodeConvert maybeCode =

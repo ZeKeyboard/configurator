@@ -6,6 +6,7 @@ import Model exposing (Model)
 import Settings exposing (Settings, SettingsGroup)
 import Settings exposing (SettingsField)
 import Settings exposing (SettingsField(..))
+import Language exposing (Language)
 
 
 decodeModel : String -> String -> Result String Model
@@ -24,13 +25,14 @@ decodeModel json name =
 
 modelDecoder : String -> Decode.Decoder Model
 modelDecoder name =
-  Decode.map6 Model
+  Decode.map7 Model
     (Decode.field "layout" layoutDecoder)
     (Decode.field "settings" settingsDecoder)
     (Decode.succeed 0)
     (Decode.succeed Nothing)
     (Decode.succeed name)
     (Decode.succeed False)
+    (Decode.succeed Language.English)
 
 
 settingsDecoder : Decode.Decoder Settings

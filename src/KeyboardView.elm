@@ -11,10 +11,11 @@ import KeyCodes exposing (keyCodeToString)
 import Keyboard exposing (Action(..))
 import Keyboard exposing (KeyActions(..))
 import KeyCodes exposing (layerModifierCodeToString)
+import Language exposing (Language)
 
 
-keyboardView : Layout -> Int -> Maybe Key -> Bool -> Html Msg
-keyboardView layout layerIndex selectedKey hovering =
+keyboardView : Layout -> Int -> Maybe Key -> Bool -> Language -> Html Msg
+keyboardView layout layerIndex selectedKey hovering language =
   let
     maxKeyX =
       Maybe.withDefault 0 (List.maximum <| List.map keyX layout)
@@ -26,13 +27,13 @@ keyboardView layout layerIndex selectedKey hovering =
     viewHeight = height <| px <| maxKeyY + keySize + offsetY
     viewCss = css [ viewWidth, viewHeight, position relative ]
 
-    keys = div [ viewCss ] (List.map (\k -> keyView k layerIndex selectedKey hovering) layout)
+    keys = div [ viewCss ] (List.map (\k -> keyView k layerIndex selectedKey hovering language) layout)
   in
     div [] [ keys ]
 
 
-keyView : Key -> Int -> Maybe Key -> Bool -> Html Msg
-keyView key layerIndex selectedKey hovering =
+keyView : Key -> Int -> Maybe Key -> Bool -> Language -> Html Msg
+keyView key layerIndex selectedKey hovering language =
   let
     keyText =
       if hovering then
@@ -48,7 +49,7 @@ keyView key layerIndex selectedKey hovering =
               Just action ->
                 case action of
                   Single keyCode ->
-                    keyCodeToString keyCode
+                    keyCodeToString keyCode language
                   _ -> "[..]"
 
     x = keyX key

@@ -20,6 +20,7 @@ import Keyboard
 import UI
 import Browser exposing (application)
 import Task
+import Language exposing (Language)
 
 
 main : Program () Model Msg
@@ -44,7 +45,8 @@ init _ =
    , currentLayerIndex = 0
    , selectedKey = Nothing
    , name = "Untitled Configuration"
-   , hovering = False }, Cmd.none)
+   , hovering = False
+   , language = Language.Swedish }, Cmd.none)
 
 
 subscriptions : Model -> Sub Msg
@@ -127,6 +129,9 @@ update msg model =
       in
         ({ model | settings = newSettings }, Cmd.none)
 
+    Messages.SetLanguage language ->
+      ({ model | language = language }, Cmd.none)
+
 
 view : Model -> Html Msg
 view model =
@@ -136,13 +141,13 @@ view model =
         Nothing ->
           span [ class "whiteText inputViewControl" ] [ text "Please select a key" ]
         Just key ->
-          inputView key model.currentLayerIndex
+          inputView key model.currentLayerIndex model.language
     totalView =
       UI.configuratorView
         model.name
         model.hovering
-        (viewControl model.currentLayerIndex)
-        (keyboardView model.layout model.currentLayerIndex model.selectedKey model.hovering)
+        (viewControl model.currentLayerIndex model.language)
+        (keyboardView model.layout model.currentLayerIndex model.selectedKey model.hovering model.language)
         keyInputView
         (fileView model.name)
         (settingsView model.settings)

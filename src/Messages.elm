@@ -2,6 +2,7 @@ module Messages exposing (Msg(..))
 
 import Keyboard exposing (Action, Key, KeyCode)
 import File exposing (File)
+import Language exposing (Language)
 
 
 type Msg
@@ -22,3 +23,4 @@ type Msg
   | DroppedFiles File (List File)
   | UpdateIntegerSetting Int Int Int String
   | UpdateBooleanSetting Int Bool
+  | SetLanguage Language

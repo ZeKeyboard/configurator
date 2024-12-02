@@ -3,6 +3,7 @@ module KeyCodes exposing (..)
 import Dict exposing (Dict)
 import Bitwise exposing (..)
 import Html.Events exposing (keyCode)
+import Language exposing (Language)
 
 
 standardKeyCode : Int
@@ -107,7 +108,7 @@ isControlKeyCode keyCode =
 
 isStandardLayerControlOrMouseCode : Int -> Bool
 isStandardLayerControlOrMouseCode keyCode =
-  (isStandardKeyCode keyCode) || 
+  (isStandardKeyCode keyCode) ||
   (isLayerHoldModifierKeyCode keyCode) ||
   (isLayerToggleModifierKeyCode keyCode) ||
   (isControlKeyCode keyCode) ||
@@ -371,6 +372,26 @@ keyCodesFromString =
       ])
 
 
+americanToSwedishDict : Dict String String
+americanToSwedishDict =
+  Dict.fromList
+    [ ("[", "Å")
+    , (";", "Ö")
+    , ("'", "Ä")
+    , ("]", "^")
+    , ("\\", "*")
+    , ("/", "-")
+    , ("=", "`")
+    , ("-", "+")
+    , ("~", "§")
+    ]
+
+
+americanToSwedish : String -> Maybe String
+americanToSwedish str =
+  Dict.get str americanToSwedishDict
+
+
 layerModifierCodesFromString : Dict String Int
 layerModifierCodesFromString =
   reverseDict layerModifierCodes
@@ -381,11 +402,19 @@ layerModifierCodeFromString str =
   Dict.get str layerModifierCodesFromString
 
 
-keyCodeToString : Int -> String
-keyCodeToString keyCode =
+keyCodeToString : Int -> Language -> String
+keyCodeToString keyCode language =
   case Dict.get keyCode keyCodes of
     Just str ->
-      str
+      case language of
+        Language.English ->
+          str
+        Language.Swedish ->
+          case americanToSwedish str of
+              Just s ->
+                s
+              Nothing ->
+                str
 
     Nothing ->
       ""
