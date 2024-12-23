@@ -5374,6 +5374,7 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$document = _Browser_document;
+var $author$project$Language$Swedish = {$: 'Swedish'};
 var $author$project$Keyboard$Key = F8(
 	function (id, row, col, x, y, height, width, actions) {
 		return {actions: actions, col: col, height: height, id: id, row: row, width: width, x: x, y: y};
@@ -6959,7 +6960,7 @@ var $author$project$Settings$initialSettings = function () {
 			_Utils_Tuple3(
 			1,
 			'Mouse acceleration',
-			A3($author$project$Settings$IntegerField, 1, 0, 10))
+			A3($author$project$Settings$IntegerField, 3, 0, 10))
 		]);
 	var backlightSettings = _List_fromArray(
 		[
@@ -6978,7 +6979,7 @@ var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$Main$init = function (_v0) {
 	return _Utils_Tuple2(
-		{currentLayerIndex: 0, hovering: false, layout: $author$project$Generated$Layout$initialLayout, name: 'Untitled Configuration', selectedKey: $elm$core$Maybe$Nothing, settings: $author$project$Settings$initialSettings},
+		{currentLayerIndex: 0, hovering: false, language: $author$project$Language$Swedish, layout: $author$project$Generated$Layout$initialLayout, name: 'Untitled Configuration', selectedKey: $elm$core$Maybe$Nothing, settings: $author$project$Settings$initialSettings},
 		$elm$core$Platform$Cmd$none);
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
@@ -8374,9 +8375,10 @@ var $author$project$FileView$exportConfiguration = function (model) {
 		A3($elm$file$File$Download$string, model.name + '.zkb', 'text/plain', serializedContent));
 };
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
-var $author$project$Model$Model = F6(
-	function (layout, settings, currentLayerIndex, selectedKey, name, hovering) {
-		return {currentLayerIndex: currentLayerIndex, hovering: hovering, layout: layout, name: name, selectedKey: selectedKey, settings: settings};
+var $author$project$Language$English = {$: 'English'};
+var $author$project$Model$Model = F7(
+	function (layout, settings, currentLayerIndex, selectedKey, name, hovering, language) {
+		return {currentLayerIndex: currentLayerIndex, hovering: hovering, language: language, layout: layout, name: name, selectedKey: selectedKey, settings: settings};
 	});
 var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$float = _Json_decodeFloat;
@@ -8461,7 +8463,7 @@ var $author$project$LayoutJSONDecoder$keyDecoder = A9(
 	A2($elm$json$Json$Decode$field, 'width', $elm$json$Json$Decode$float),
 	A2($elm$json$Json$Decode$field, 'actions', $author$project$LayoutJSONDecoder$keyActionsDecoder));
 var $author$project$LayoutJSONDecoder$layoutDecoder = $elm$json$Json$Decode$list($author$project$LayoutJSONDecoder$keyDecoder);
-var $elm$json$Json$Decode$map6 = _Json_map6;
+var $elm$json$Json$Decode$map7 = _Json_map7;
 var $author$project$Settings$SettingsGroup = F2(
 	function (name, settings) {
 		return {name: name, settings: settings};
@@ -8497,15 +8499,16 @@ var $author$project$LayoutJSONDecoder$settingsGroupDecoder = A3(
 	A2($elm$json$Json$Decode$field, 'settings', $author$project$LayoutJSONDecoder$settingsTupleListDecoder));
 var $author$project$LayoutJSONDecoder$settingsDecoder = $elm$json$Json$Decode$list($author$project$LayoutJSONDecoder$settingsGroupDecoder);
 var $author$project$LayoutJSONDecoder$modelDecoder = function (name) {
-	return A7(
-		$elm$json$Json$Decode$map6,
+	return A8(
+		$elm$json$Json$Decode$map7,
 		$author$project$Model$Model,
 		A2($elm$json$Json$Decode$field, 'layout', $author$project$LayoutJSONDecoder$layoutDecoder),
 		A2($elm$json$Json$Decode$field, 'settings', $author$project$LayoutJSONDecoder$settingsDecoder),
 		$elm$json$Json$Decode$succeed(0),
 		$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing),
 		$elm$json$Json$Decode$succeed(name),
-		$elm$json$Json$Decode$succeed(false));
+		$elm$json$Json$Decode$succeed(false),
+		$elm$json$Json$Decode$succeed($author$project$Language$English));
 };
 var $author$project$LayoutJSONDecoder$decodeModel = F2(
 	function (json, name) {
@@ -9033,7 +9036,7 @@ var $author$project$Main$update = F2(
 						model,
 						{settings: newSettings}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'UpdateBooleanSetting':
 				var settingNumber = msg.a;
 				var value = msg.b;
 				var newSettings = A3($author$project$Settings$updateBooleanSetting, settingNumber, value, model.settings);
@@ -9041,6 +9044,13 @@ var $author$project$Main$update = F2(
 					_Utils_update(
 						model,
 						{settings: newSettings}),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var language = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{language: language}),
 					$elm$core$Platform$Cmd$none);
 		}
 	});
@@ -11298,17 +11308,44 @@ var $author$project$InputView$sequenceInput = F4(
 				]));
 	});
 var $rtfeldman$elm_css$Html$Styled$hr = $rtfeldman$elm_css$Html$Styled$node('hr');
-var $author$project$KeyCodes$keyCodeToString = function (keyCode) {
-	var _v0 = A2($elm$core$Dict$get, keyCode, $author$project$KeyCodes$keyCodes);
-	if (_v0.$ === 'Just') {
-		var str = _v0.a;
-		return str;
-	} else {
-		return '';
-	}
+var $author$project$KeyCodes$americanToSwedishDict = $elm$core$Dict$fromList(
+	_List_fromArray(
+		[
+			_Utils_Tuple2('[', 'Å'),
+			_Utils_Tuple2(';', 'Ö'),
+			_Utils_Tuple2('\'', 'Ä'),
+			_Utils_Tuple2(']', '^'),
+			_Utils_Tuple2('\\', '*'),
+			_Utils_Tuple2('/', '-'),
+			_Utils_Tuple2('=', '`'),
+			_Utils_Tuple2('-', '+'),
+			_Utils_Tuple2('~', '§')
+		]));
+var $author$project$KeyCodes$americanToSwedish = function (str) {
+	return A2($elm$core$Dict$get, str, $author$project$KeyCodes$americanToSwedishDict);
 };
-var $author$project$InputView$singleInput = F2(
-	function (keyCode, key) {
+var $author$project$KeyCodes$keyCodeToString = F2(
+	function (keyCode, language) {
+		var _v0 = A2($elm$core$Dict$get, keyCode, $author$project$KeyCodes$keyCodes);
+		if (_v0.$ === 'Just') {
+			var str = _v0.a;
+			if (language.$ === 'English') {
+				return str;
+			} else {
+				var _v2 = $author$project$KeyCodes$americanToSwedish(str);
+				if (_v2.$ === 'Just') {
+					var s = _v2.a;
+					return s;
+				} else {
+					return str;
+				}
+			}
+		} else {
+			return '';
+		}
+	});
+var $author$project$InputView$singleInput = F3(
+	function (keyCode, key, language) {
 		var options = function (codes) {
 			return A2(
 				$elm$core$List$map,
@@ -11318,14 +11355,14 @@ var $author$project$InputView$singleInput = F2(
 						_List_fromArray(
 							[
 								$rtfeldman$elm_css$Html$Styled$Attributes$value(
-								$author$project$KeyCodes$keyCodeToString(k)),
+								A2($author$project$KeyCodes$keyCodeToString, k, language)),
 								$rtfeldman$elm_css$Html$Styled$Attributes$selected(
 								_Utils_eq(k, keyCode))
 							]),
 						_List_fromArray(
 							[
 								$rtfeldman$elm_css$Html$Styled$text(
-								$author$project$KeyCodes$keyCodeToString(k))
+								A2($author$project$KeyCodes$keyCodeToString, k, language))
 							]));
 				},
 				codes);
@@ -11403,8 +11440,8 @@ var $author$project$InputView$singleInput = F2(
 														]),
 													options(controlKeys))))))))))));
 	});
-var $author$project$InputView$valueInput = F2(
-	function (key, layerIndex) {
+var $author$project$InputView$valueInput = F3(
+	function (key, layerIndex, language) {
 		var _v0 = key.actions;
 		if (_v0.$ === 'LayerModifier') {
 			var keyCode = _v0.a;
@@ -11419,7 +11456,7 @@ var $author$project$InputView$valueInput = F2(
 				switch (action.$) {
 					case 'Single':
 						var keyCode = action.a;
-						return A2($author$project$InputView$singleInput, keyCode, key);
+						return A3($author$project$InputView$singleInput, keyCode, key, language);
 					case 'Sequence':
 						var rawString = action.a;
 						var sequence = action.b;
@@ -11432,8 +11469,8 @@ var $author$project$InputView$valueInput = F2(
 			}
 		}
 	});
-var $author$project$InputView$actionInput = F2(
-	function (key, currentLayerIndex) {
+var $author$project$InputView$actionInput = F3(
+	function (key, currentLayerIndex, language) {
 		var singleActionString = 'single';
 		var sequenceActionString = 'sequence';
 		var layerActionString = 'layer';
@@ -11539,7 +11576,7 @@ var $author$project$InputView$actionInput = F2(
 			_List_fromArray(
 				[
 					actionDropdown,
-					A2($author$project$InputView$valueInput, key, currentLayerIndex),
+					A3($author$project$InputView$valueInput, key, currentLayerIndex, language),
 					A2(
 					$rtfeldman$elm_css$Html$Styled$button,
 					_List_fromArray(
@@ -11577,8 +11614,8 @@ var $author$project$Keyboard$isKeyBlank = F2(
 			}
 		}
 	});
-var $author$project$InputView$inputView = F2(
-	function (key, layerIndex) {
+var $author$project$InputView$inputView = F3(
+	function (key, layerIndex, language) {
 		return A2($author$project$Keyboard$isKeyBlank, key, layerIndex) ? A2(
 			$rtfeldman$elm_css$Html$Styled$div,
 			_List_Nil,
@@ -11595,7 +11632,7 @@ var $author$project$InputView$inputView = F2(
 						[
 							$rtfeldman$elm_css$Html$Styled$text('New action')
 						]))
-				])) : A2($author$project$InputView$actionInput, key, layerIndex);
+				])) : A3($author$project$InputView$actionInput, key, layerIndex, language);
 	});
 var $rtfeldman$elm_css$Css$height = $rtfeldman$elm_css$Css$prop1('height');
 var $author$project$KeyboardView$keySize = 50;
@@ -11706,8 +11743,8 @@ var $author$project$KeyboardView$keyY = function (key) {
 var $rtfeldman$elm_css$Css$left = $rtfeldman$elm_css$Css$prop1('left');
 var $rtfeldman$elm_css$Css$solid = {borderStyle: $rtfeldman$elm_css$Css$Structure$Compatible, textDecorationStyle: $rtfeldman$elm_css$Css$Structure$Compatible, value: 'solid'};
 var $rtfeldman$elm_css$Css$top = $rtfeldman$elm_css$Css$prop1('top');
-var $author$project$KeyboardView$keyView = F4(
-	function (key, layerIndex, selectedKey, hovering) {
+var $author$project$KeyboardView$keyView = F5(
+	function (key, layerIndex, selectedKey, hovering, language) {
 		var y = $author$project$KeyboardView$keyY(key);
 		var x = $author$project$KeyboardView$keyX(key);
 		var keyText = function () {
@@ -11727,7 +11764,7 @@ var $author$project$KeyboardView$keyView = F4(
 						var action = _v1.a;
 						if (action.$ === 'Single') {
 							var keyCode = action.a;
-							return $author$project$KeyCodes$keyCodeToString(keyCode);
+							return A2($author$project$KeyCodes$keyCodeToString, keyCode, language);
 						} else {
 							return '[..]';
 						}
@@ -11805,8 +11842,8 @@ var $elm$core$List$maximum = function (list) {
 };
 var $rtfeldman$elm_css$Css$position = $rtfeldman$elm_css$Css$prop1('position');
 var $rtfeldman$elm_css$Css$relative = {position: $rtfeldman$elm_css$Css$Structure$Compatible, value: 'relative'};
-var $author$project$KeyboardView$keyboardView = F4(
-	function (layout, layerIndex, selectedKey, hovering) {
+var $author$project$KeyboardView$keyboardView = F5(
+	function (layout, layerIndex, selectedKey, hovering, language) {
 		var maxKeyY = A2(
 			$elm$core$Maybe$withDefault,
 			0,
@@ -11835,7 +11872,7 @@ var $author$project$KeyboardView$keyboardView = F4(
 			A2(
 				$elm$core$List$map,
 				function (k) {
-					return A4($author$project$KeyboardView$keyView, k, layerIndex, selectedKey, hovering);
+					return A5($author$project$KeyboardView$keyView, k, layerIndex, selectedKey, hovering, language);
 				},
 				layout));
 		return A2(
@@ -11984,72 +12021,120 @@ var $author$project$SettingsView$settingsView = function (settings) {
 			]),
 		A2($elm$core$List$map, $author$project$SettingsView$settingsGroupView, settings));
 };
+var $author$project$Messages$SetLanguage = function (a) {
+	return {$: 'SetLanguage', a: a};
+};
 var $author$project$Messages$SetLayer = function (a) {
 	return {$: 'SetLayer', a: a};
 };
-var $author$project$ViewControl$viewControl = function (currentLayerIndex) {
-	var layerInputToMessage = function (str) {
-		switch (str) {
-			case '0':
-				return $author$project$Messages$SetLayer(0);
-			case '1':
-				return $author$project$Messages$SetLayer(1);
-			case '2':
-				return $author$project$Messages$SetLayer(2);
-			default:
-				return $author$project$Messages$SetLayer(0);
-		}
-	};
-	return A2(
-		$rtfeldman$elm_css$Html$Styled$div,
-		_List_Nil,
-		_List_fromArray(
-			[
-				A2(
-				$rtfeldman$elm_css$Html$Styled$select,
-				_List_fromArray(
-					[
-						$rtfeldman$elm_css$Html$Styled$Attributes$class('layerViewControl'),
-						$rtfeldman$elm_css$Html$Styled$Events$onInput(layerInputToMessage)
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$rtfeldman$elm_css$Html$Styled$option,
-						_List_fromArray(
-							[
-								$rtfeldman$elm_css$Html$Styled$Attributes$value('0'),
-								$rtfeldman$elm_css$Html$Styled$Attributes$selected(!currentLayerIndex)
-							]),
-						_List_fromArray(
-							[
-								$rtfeldman$elm_css$Html$Styled$text('Layer 1')
-							])),
-						A2(
-						$rtfeldman$elm_css$Html$Styled$option,
-						_List_fromArray(
-							[
-								$rtfeldman$elm_css$Html$Styled$Attributes$value('1'),
-								$rtfeldman$elm_css$Html$Styled$Attributes$selected(currentLayerIndex === 1)
-							]),
-						_List_fromArray(
-							[
-								$rtfeldman$elm_css$Html$Styled$text('Layer 2')
-							])),
-						A2(
-						$rtfeldman$elm_css$Html$Styled$option,
-						_List_fromArray(
-							[
-								$rtfeldman$elm_css$Html$Styled$Attributes$value('2'),
-								$rtfeldman$elm_css$Html$Styled$Attributes$selected(currentLayerIndex === 2)
-							]),
-						_List_fromArray(
-							[
-								$rtfeldman$elm_css$Html$Styled$text('Layer 3')
-							]))
-					]))
-			]));
-};
+var $author$project$ViewControl$viewControl = F2(
+	function (currentLayerIndex, language) {
+		var layerInputToMessage = function (str) {
+			switch (str) {
+				case '0':
+					return $author$project$Messages$SetLayer(0);
+				case '1':
+					return $author$project$Messages$SetLayer(1);
+				case '2':
+					return $author$project$Messages$SetLayer(2);
+				default:
+					return $author$project$Messages$SetLayer(0);
+			}
+		};
+		var languageInputToMessage = function (str) {
+			switch (str) {
+				case 'se':
+					return $author$project$Messages$SetLanguage($author$project$Language$Swedish);
+				case 'en':
+					return $author$project$Messages$SetLanguage($author$project$Language$English);
+				default:
+					return $author$project$Messages$SetLanguage($author$project$Language$Swedish);
+			}
+		};
+		return A2(
+			$rtfeldman$elm_css$Html$Styled$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$rtfeldman$elm_css$Html$Styled$select,
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Html$Styled$Attributes$class('layerViewControl'),
+							$rtfeldman$elm_css$Html$Styled$Events$onInput(layerInputToMessage)
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$rtfeldman$elm_css$Html$Styled$option,
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$Attributes$value('0'),
+									$rtfeldman$elm_css$Html$Styled$Attributes$selected(!currentLayerIndex)
+								]),
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$text('Layer 1')
+								])),
+							A2(
+							$rtfeldman$elm_css$Html$Styled$option,
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$Attributes$value('1'),
+									$rtfeldman$elm_css$Html$Styled$Attributes$selected(currentLayerIndex === 1)
+								]),
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$text('Layer 2')
+								])),
+							A2(
+							$rtfeldman$elm_css$Html$Styled$option,
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$Attributes$value('2'),
+									$rtfeldman$elm_css$Html$Styled$Attributes$selected(currentLayerIndex === 2)
+								]),
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$text('Layer 3')
+								]))
+						])),
+					A2(
+					$rtfeldman$elm_css$Html$Styled$select,
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Html$Styled$Attributes$class('layerViewControl'),
+							$rtfeldman$elm_css$Html$Styled$Events$onInput(languageInputToMessage)
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$rtfeldman$elm_css$Html$Styled$option,
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$Attributes$value('se'),
+									$rtfeldman$elm_css$Html$Styled$Attributes$selected(
+									_Utils_eq(language, $author$project$Language$Swedish))
+								]),
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$text('🇸🇪')
+								])),
+							A2(
+							$rtfeldman$elm_css$Html$Styled$option,
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$Attributes$value('en'),
+									$rtfeldman$elm_css$Html$Styled$Attributes$selected(
+									_Utils_eq(language, $author$project$Language$English))
+								]),
+							_List_fromArray(
+								[
+									$rtfeldman$elm_css$Html$Styled$text('🇺🇸')
+								]))
+						]))
+				]));
+	});
 var $author$project$Main$view = function (model) {
 	var keyInputView = function () {
 		var _v0 = model.selectedKey;
@@ -12066,15 +12151,15 @@ var $author$project$Main$view = function (model) {
 					]));
 		} else {
 			var key = _v0.a;
-			return A2($author$project$InputView$inputView, key, model.currentLayerIndex);
+			return A3($author$project$InputView$inputView, key, model.currentLayerIndex, model.language);
 		}
 	}();
 	var totalView = A7(
 		$author$project$UI$configuratorView,
 		model.name,
 		model.hovering,
-		$author$project$ViewControl$viewControl(model.currentLayerIndex),
-		A4($author$project$KeyboardView$keyboardView, model.layout, model.currentLayerIndex, model.selectedKey, model.hovering),
+		A2($author$project$ViewControl$viewControl, model.currentLayerIndex, model.language),
+		A5($author$project$KeyboardView$keyboardView, model.layout, model.currentLayerIndex, model.selectedKey, model.hovering, model.language),
 		keyInputView,
 		$author$project$FileView$fileView(model.name),
 		$author$project$SettingsView$settingsView(model.settings));
