@@ -234,5 +234,6 @@ serializeSetting (settingNumber, _, field) =
     value = case field of
       IntegerField v _ _ -> v
       BooleanField v -> if v then 1 else 0
+      EnumField v _ -> v
   in
     [ settingNumber, value ]

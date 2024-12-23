@@ -65,6 +65,7 @@ settingsFieldDecoder =
   Decode.oneOf
     [ integerSettingsFieldDecoder
     , booleanSettingsFieldDecoder
+    , enumSettingsFieldDecoder
     ]
 
 
@@ -80,6 +81,13 @@ booleanSettingsFieldDecoder : Decode.Decoder SettingsField
 booleanSettingsFieldDecoder =
   Decode.map BooleanField
     (Decode.field "value" Decode.bool)
+
+
+enumSettingsFieldDecoder : Decode.Decoder SettingsField
+enumSettingsFieldDecoder =
+  Decode.map2 EnumField
+    (Decode.field "value" Decode.int)
+    (Decode.field "options" <| Decode.list Decode.string)
 
 
 layoutDecoder : Decode.Decoder Layout

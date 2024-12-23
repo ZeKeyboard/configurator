@@ -141,4 +141,8 @@ encodeSettingsField field =
     BooleanField value ->
       Encode.object
         [ ("value", Encode.bool value) ]
+    EnumField value options ->
+      Encode.object
+        [ ("value", Encode.int value)
+        , ("options", Encode.list Encode.string options )]
 

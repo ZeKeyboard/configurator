@@ -23,4 +23,5 @@ type Msg
   | DroppedFiles File (List File)
   | UpdateIntegerSetting Int Int Int String
   | UpdateBooleanSetting Int Bool
+  | UpdateEnumSetting Int Int (List String)
   | SetLanguage Language

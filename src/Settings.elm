@@ -3,6 +3,7 @@ module Settings exposing (..)
 type SettingsField
   = IntegerField Int Int Int  -- value, min, max
   | BooleanField Bool
+  | EnumField Int (List String) -- selected index, options
 
 
 type alias SettingsGroup =
@@ -23,6 +24,7 @@ initialSettings =
       ]
     backlightSettings =
       [ (2, "Highlight keys on layer", BooleanField True)
+      , (3, "Default scheme", EnumField 0 ["Wave", "Game of Life", "Lights"])
       ]
   in
     [
@@ -44,6 +46,20 @@ updateIntegerSetting settingNumber value minValue maxValue oldSettings =
           (\(n, name, field) ->
             if n == settingNumber then
               (n, name, IntegerField value minValue maxValue)
+            else
+              (n, name, field))
+          group.settings }) oldSettings
+
+
+updateEnumSetting : Int -> Int -> List String -> Settings -> Settings
+updateEnumSetting settingNumber value strOptions oldSettings =
+  List.map
+    (\group ->
+      { group | settings =
+        List.map
+          (\(n, name, field) ->
+            if n == settingNumber then
+              (n, name, EnumField value strOptions)
             else
               (n, name, field))
           group.settings }) oldSettings

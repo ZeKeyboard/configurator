@@ -129,6 +129,12 @@ update msg model =
       in
         ({ model | settings = newSettings }, Cmd.none)
 
+    Messages.UpdateEnumSetting settingNumber value strOptions ->
+      let
+        newSettings = Settings.updateEnumSetting settingNumber value strOptions model.settings
+      in
+        ({ model | settings = newSettings }, Cmd.none)
+
     Messages.SetLanguage language ->
       ({ model | language = language }, Cmd.none)
 

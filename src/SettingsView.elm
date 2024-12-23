@@ -31,6 +31,8 @@ settingsFieldView settingsField =
         integerSettingsFieldView settingNumber name settingValue minValue maxValue
       BooleanField settingValue ->
         booleanSettingsFieldView settingNumber name settingValue
+      EnumField settingValue strOptions ->
+        enumSettingsFieldView settingNumber name settingValue strOptions
   in
     fieldView
 
@@ -64,4 +66,22 @@ booleanSettingsFieldView settingNumber settingName settingValue =
                    , checked
                    , onCheck (UpdateBooleanSetting settingNumber)
                    ] [ ]
+    ]
+
+
+enumSettingsFieldView : Int -> String -> Int -> List String -> Html Msg
+enumSettingsFieldView settingNumber settingName settingValue strOptions =
+  let
+    numStr = (String.fromInt settingNumber)
+    toInt str = case String.toInt str of
+      Just i -> i
+      Nothing -> 0
+
+    enumInputToIndex str = UpdateEnumSetting settingNumber (toInt str) strOptions
+    optionFromEnumValue index strOpt =
+      option [ value (String.fromInt index), selected (settingValue == index) ] [ text strOpt ]
+    optionsHtml = List.indexedMap optionFromEnumValue strOptions
+  in
+    div [] [ label [ for numStr ] [ text (settingName ++ ": ") ]
+           , select [ onInput enumInputToIndex ] optionsHtml
     ]
