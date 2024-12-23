@@ -19,7 +19,7 @@ initialSettings =
   let
     mouseSettings =
       [ (0, "Mouse speed",             IntegerField 5 1 10)
-      , (1, "Mouse acceleration",      IntegerField 1 0 10)
+      , (1, "Mouse acceleration",      IntegerField 3 0 10)
       ]
     backlightSettings =
       [ (2, "Highlight keys on layer", BooleanField True)
