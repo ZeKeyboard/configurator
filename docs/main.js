@@ -6946,6 +6946,10 @@ var $author$project$Generated$Layout$initialLayout = _List_fromArray(
 var $author$project$Settings$BooleanField = function (a) {
 	return {$: 'BooleanField', a: a};
 };
+var $author$project$Settings$EnumField = F2(
+	function (a, b) {
+		return {$: 'EnumField', a: a, b: b};
+	});
 var $author$project$Settings$IntegerField = F3(
 	function (a, b, c) {
 		return {$: 'IntegerField', a: a, b: b, c: c};
@@ -6967,7 +6971,15 @@ var $author$project$Settings$initialSettings = function () {
 			_Utils_Tuple3(
 			2,
 			'Highlight keys on layer',
-			$author$project$Settings$BooleanField(true))
+			$author$project$Settings$BooleanField(true)),
+			_Utils_Tuple3(
+			3,
+			'Default scheme',
+			A2(
+				$author$project$Settings$EnumField,
+				0,
+				_List_fromArray(
+					['Wave', 'Game of Life', 'Lights'])))
 		]);
 	return _List_fromArray(
 		[
@@ -8322,12 +8334,16 @@ var $author$project$KeyboardSerializer$serializeSetting = function (_v0) {
 	var settingNumber = _v0.a;
 	var field = _v0.c;
 	var value = function () {
-		if (field.$ === 'IntegerField') {
-			var v = field.a;
-			return v;
-		} else {
-			var v = field.a;
-			return v ? 1 : 0;
+		switch (field.$) {
+			case 'IntegerField':
+				var v = field.a;
+				return v;
+			case 'BooleanField':
+				var v = field.a;
+				return v ? 1 : 0;
+			default:
+				var v = field.a;
+				return v;
 		}
 	}();
 	return _List_fromArray(
@@ -8473,6 +8489,14 @@ var $author$project$LayoutJSONDecoder$booleanSettingsFieldDecoder = A2(
 	$elm$json$Json$Decode$map,
 	$author$project$Settings$BooleanField,
 	A2($elm$json$Json$Decode$field, 'value', $elm$json$Json$Decode$bool));
+var $author$project$LayoutJSONDecoder$enumSettingsFieldDecoder = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$Settings$EnumField,
+	A2($elm$json$Json$Decode$field, 'value', $elm$json$Json$Decode$int),
+	A2(
+		$elm$json$Json$Decode$field,
+		'options',
+		$elm$json$Json$Decode$list($elm$json$Json$Decode$string)));
 var $author$project$LayoutJSONDecoder$integerSettingsFieldDecoder = A4(
 	$elm$json$Json$Decode$map3,
 	$author$project$Settings$IntegerField,
@@ -8481,7 +8505,7 @@ var $author$project$LayoutJSONDecoder$integerSettingsFieldDecoder = A4(
 	A2($elm$json$Json$Decode$field, 'max', $elm$json$Json$Decode$int));
 var $author$project$LayoutJSONDecoder$settingsFieldDecoder = $elm$json$Json$Decode$oneOf(
 	_List_fromArray(
-		[$author$project$LayoutJSONDecoder$integerSettingsFieldDecoder, $author$project$LayoutJSONDecoder$booleanSettingsFieldDecoder]));
+		[$author$project$LayoutJSONDecoder$integerSettingsFieldDecoder, $author$project$LayoutJSONDecoder$booleanSettingsFieldDecoder, $author$project$LayoutJSONDecoder$enumSettingsFieldDecoder]));
 var $author$project$LayoutJSONDecoder$settingsTupleDecoder = A4(
 	$elm$json$Json$Decode$map3,
 	F3(
@@ -8686,32 +8710,46 @@ var $author$project$LayoutJSONEncoder$encodeLayout = function (layout) {
 };
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $author$project$LayoutJSONEncoder$encodeSettingsField = function (field) {
-	if (field.$ === 'IntegerField') {
-		var value = field.a;
-		var min = field.b;
-		var max = field.c;
-		return $elm$json$Json$Encode$object(
-			_List_fromArray(
-				[
-					_Utils_Tuple2(
-					'value',
-					$elm$json$Json$Encode$int(value)),
-					_Utils_Tuple2(
-					'min',
-					$elm$json$Json$Encode$int(min)),
-					_Utils_Tuple2(
-					'max',
-					$elm$json$Json$Encode$int(max))
-				]));
-	} else {
-		var value = field.a;
-		return $elm$json$Json$Encode$object(
-			_List_fromArray(
-				[
-					_Utils_Tuple2(
-					'value',
-					$elm$json$Json$Encode$bool(value))
-				]));
+	switch (field.$) {
+		case 'IntegerField':
+			var value = field.a;
+			var min = field.b;
+			var max = field.c;
+			return $elm$json$Json$Encode$object(
+				_List_fromArray(
+					[
+						_Utils_Tuple2(
+						'value',
+						$elm$json$Json$Encode$int(value)),
+						_Utils_Tuple2(
+						'min',
+						$elm$json$Json$Encode$int(min)),
+						_Utils_Tuple2(
+						'max',
+						$elm$json$Json$Encode$int(max))
+					]));
+		case 'BooleanField':
+			var value = field.a;
+			return $elm$json$Json$Encode$object(
+				_List_fromArray(
+					[
+						_Utils_Tuple2(
+						'value',
+						$elm$json$Json$Encode$bool(value))
+					]));
+		default:
+			var value = field.a;
+			var options = field.b;
+			return $elm$json$Json$Encode$object(
+				_List_fromArray(
+					[
+						_Utils_Tuple2(
+						'value',
+						$elm$json$Json$Encode$int(value)),
+						_Utils_Tuple2(
+						'options',
+						A2($elm$json$Json$Encode$list, $elm$json$Json$Encode$string, options))
+					]));
 	}
 };
 var $author$project$LayoutJSONEncoder$encodeSettingsTuple = function (_v0) {
@@ -8853,6 +8891,30 @@ var $author$project$Settings$updateBooleanSetting = F3(
 									n,
 									name,
 									$author$project$Settings$BooleanField(value)) : _Utils_Tuple3(n, name, field);
+							},
+							group.settings)
+					});
+			},
+			oldSettings);
+	});
+var $author$project$Settings$updateEnumSetting = F4(
+	function (settingNumber, value, strOptions, oldSettings) {
+		return A2(
+			$elm$core$List$map,
+			function (group) {
+				return _Utils_update(
+					group,
+					{
+						settings: A2(
+							$elm$core$List$map,
+							function (_v0) {
+								var n = _v0.a;
+								var name = _v0.b;
+								var field = _v0.c;
+								return _Utils_eq(n, settingNumber) ? _Utils_Tuple3(
+									n,
+									name,
+									A2($author$project$Settings$EnumField, value, strOptions)) : _Utils_Tuple3(n, name, field);
 							},
 							group.settings)
 					});
@@ -9040,6 +9102,16 @@ var $author$project$Main$update = F2(
 				var settingNumber = msg.a;
 				var value = msg.b;
 				var newSettings = A3($author$project$Settings$updateBooleanSetting, settingNumber, value, model.settings);
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{settings: newSettings}),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateEnumSetting':
+				var settingNumber = msg.a;
+				var value = msg.b;
+				var strOptions = msg.c;
+				var newSettings = A4($author$project$Settings$updateEnumSetting, settingNumber, value, strOptions, model.settings);
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -11932,6 +12004,70 @@ var $author$project$SettingsView$booleanSettingsFieldView = F3(
 					_List_Nil)
 				]));
 	});
+var $author$project$Messages$UpdateEnumSetting = F3(
+	function (a, b, c) {
+		return {$: 'UpdateEnumSetting', a: a, b: b, c: c};
+	});
+var $author$project$SettingsView$enumSettingsFieldView = F4(
+	function (settingNumber, settingName, settingValue, strOptions) {
+		var toInt = function (str) {
+			var _v0 = $elm$core$String$toInt(str);
+			if (_v0.$ === 'Just') {
+				var i = _v0.a;
+				return i;
+			} else {
+				return 0;
+			}
+		};
+		var optionFromEnumValue = F2(
+			function (index, strOpt) {
+				return A2(
+					$rtfeldman$elm_css$Html$Styled$option,
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Html$Styled$Attributes$value(
+							$elm$core$String$fromInt(index)),
+							$rtfeldman$elm_css$Html$Styled$Attributes$selected(
+							_Utils_eq(settingValue, index))
+						]),
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Html$Styled$text(strOpt)
+						]));
+			});
+		var optionsHtml = A2($elm$core$List$indexedMap, optionFromEnumValue, strOptions);
+		var numStr = $elm$core$String$fromInt(settingNumber);
+		var enumInputToIndex = function (str) {
+			return A3(
+				$author$project$Messages$UpdateEnumSetting,
+				settingNumber,
+				toInt(str),
+				strOptions);
+		};
+		return A2(
+			$rtfeldman$elm_css$Html$Styled$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					$rtfeldman$elm_css$Html$Styled$label,
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Html$Styled$Attributes$for(numStr)
+						]),
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Html$Styled$text(settingName + ': ')
+						])),
+					A2(
+					$rtfeldman$elm_css$Html$Styled$select,
+					_List_fromArray(
+						[
+							$rtfeldman$elm_css$Html$Styled$Events$onInput(enumInputToIndex)
+						]),
+					optionsHtml)
+				]));
+	});
 var $author$project$Messages$UpdateIntegerSetting = F4(
 	function (a, b, c, d) {
 		return {$: 'UpdateIntegerSetting', a: a, b: b, c: c, d: d};
@@ -11981,14 +12117,19 @@ var $author$project$SettingsView$settingsFieldView = function (settingsField) {
 	var name = _v0.b;
 	var field = _v0.c;
 	var fieldView = function () {
-		if (field.$ === 'IntegerField') {
-			var settingValue = field.a;
-			var minValue = field.b;
-			var maxValue = field.c;
-			return A5($author$project$SettingsView$integerSettingsFieldView, settingNumber, name, settingValue, minValue, maxValue);
-		} else {
-			var settingValue = field.a;
-			return A3($author$project$SettingsView$booleanSettingsFieldView, settingNumber, name, settingValue);
+		switch (field.$) {
+			case 'IntegerField':
+				var settingValue = field.a;
+				var minValue = field.b;
+				var maxValue = field.c;
+				return A5($author$project$SettingsView$integerSettingsFieldView, settingNumber, name, settingValue, minValue, maxValue);
+			case 'BooleanField':
+				var settingValue = field.a;
+				return A3($author$project$SettingsView$booleanSettingsFieldView, settingNumber, name, settingValue);
+			default:
+				var settingValue = field.a;
+				var strOptions = field.b;
+				return A4($author$project$SettingsView$enumSettingsFieldView, settingNumber, name, settingValue, strOptions);
 		}
 	}();
 	return fieldView;
