@@ -8371,6 +8371,11 @@ var $author$project$KeyboardSerializer$serializeSettings = function (settings) {
 				$author$project$KeyboardSerializer$encodeUint16AsAscii(checkSum),
 				$elm$core$String$concat(settingsAscii))));
 };
+var $author$project$KeyboardSerializer$serializeEverything = function (model) {
+	var settings = $author$project$KeyboardSerializer$serializeSettings(model.settings);
+	var layout = $author$project$KeyboardSerializer$serializeLayout(model.layout);
+	return _Utils_ap(layout, settings);
+};
 var $elm$time$Time$Posix = function (a) {
 	return {$: 'Posix', a: a};
 };
@@ -8383,9 +8388,7 @@ var $elm$file$File$Download$string = F3(
 			A3(_File_download, name, mime, content));
 	});
 var $author$project$FileView$exportConfiguration = function (model) {
-	var serializedSettings = $author$project$KeyboardSerializer$serializeSettings(model.settings);
-	var serializedLayout = $author$project$KeyboardSerializer$serializeLayout(model.layout);
-	var serializedContent = _Utils_ap(serializedLayout, serializedSettings);
+	var serializedContent = $author$project$KeyboardSerializer$serializeEverything(model);
 	return _Utils_Tuple2(
 		model,
 		A3($elm$file$File$Download$string, model.name + '.zkb', 'text/plain', serializedContent));
@@ -9219,6 +9222,7 @@ var $author$project$UI$hijackOn = F2(
 			event,
 			A2($elm$json$Json$Decode$map, $author$project$UI$hijack, decoder));
 	});
+var $rtfeldman$elm_css$Html$Styled$hr = $rtfeldman$elm_css$Html$Styled$node('hr');
 var $rtfeldman$elm_css$VirtualDom$Styled$Unstyled = function (a) {
 	return {$: 'Unstyled', a: a};
 };
@@ -9262,8 +9266,9 @@ var $author$project$UI$configuratorView = F7(
 					viewControl,
 					keyboardView,
 					inputView,
-					fileView,
-					settingsView
+					settingsView,
+					A2($rtfeldman$elm_css$Html$Styled$hr, _List_Nil, _List_Nil),
+					fileView
 				]));
 	});
 var $author$project$Messages$ChangeName = function (a) {
@@ -9374,6 +9379,7 @@ var $author$project$FileView$fileView = function (name) {
 				_List_Nil)
 			]));
 };
+var $rtfeldman$elm_css$Html$Styled$Attributes$id = $rtfeldman$elm_css$Html$Styled$Attributes$stringProperty('id');
 var $author$project$Messages$CreateAction = function (a) {
 	return {$: 'CreateAction', a: a};
 };
@@ -11379,7 +11385,6 @@ var $author$project$InputView$sequenceInput = F4(
 						]))
 				]));
 	});
-var $rtfeldman$elm_css$Html$Styled$hr = $rtfeldman$elm_css$Html$Styled$node('hr');
 var $author$project$KeyCodes$americanToSwedishDict = $elm$core$Dict$fromList(
 	_List_fromArray(
 		[
@@ -12277,6 +12282,7 @@ var $author$project$ViewControl$viewControl = F2(
 				]));
 	});
 var $author$project$Main$view = function (model) {
+	var serializedModel = $author$project$KeyboardSerializer$serializeEverything(model);
 	var keyInputView = function () {
 		var _v0 = model.selectedKey;
 		if (_v0.$ === 'Nothing') {
@@ -12304,7 +12310,24 @@ var $author$project$Main$view = function (model) {
 		keyInputView,
 		$author$project$FileView$fileView(model.name),
 		$author$project$SettingsView$settingsView(model.settings));
-	return totalView;
+	return A2(
+		$rtfeldman$elm_css$Html$Styled$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$rtfeldman$elm_css$Html$Styled$span,
+				_List_fromArray(
+					[
+						$rtfeldman$elm_css$Html$Styled$Attributes$class('serializedModelSpan'),
+						$rtfeldman$elm_css$Html$Styled$Attributes$id('serializedModel')
+					]),
+				_List_fromArray(
+					[
+						$rtfeldman$elm_css$Html$Styled$text(serializedModel)
+					])),
+				totalView
+			]));
 };
 var $author$project$Main$main = function () {
 	var toDocument = F3(

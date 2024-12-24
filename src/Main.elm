@@ -21,6 +21,7 @@ import UI
 import Browser exposing (application)
 import Task
 import Language exposing (Language)
+import KeyboardSerializer
 
 
 main : Program () Model Msg
@@ -157,5 +158,9 @@ view model =
         keyInputView
         (fileView model.name)
         (settingsView model.settings)
+    serializedModel = KeyboardSerializer.serializeEverything model
   in
-    totalView
+    div []
+    [ span [ class "serializedModelSpan", id "serializedModel" ] [ text serializedModel ]
+    , totalView
+      ]

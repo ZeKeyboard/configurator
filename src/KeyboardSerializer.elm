@@ -1,4 +1,4 @@
-module KeyboardSerializer exposing (serializeLayout, serializeSettings)
+module KeyboardSerializer exposing (serializeLayout, serializeSettings, serializeEverything)
 
 import Bytes exposing (Bytes)
 import Bytes.Encode as Encode
@@ -9,10 +9,20 @@ import Keyboard exposing (KeyActions(..))
 import Settings exposing (Settings)
 import Settings exposing (SettingsGroup)
 import Settings exposing (SettingsField(..))
+import Model exposing (Model)
 
 
 settingsStartWord : String
 settingsStartWord = "DEADBEEFDEADBEEF"
+
+
+serializeEverything : Model -> String
+serializeEverything model =
+  let
+    layout = serializeLayout model.layout
+    settings = serializeSettings model.settings
+  in
+    layout ++ settings
 
 
 byteToHexAscii : Int -> String

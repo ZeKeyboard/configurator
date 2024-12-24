@@ -24,8 +24,9 @@ configuratorView name hovering viewControl keyboardView inputView fileView setti
     , viewControl
     , keyboardView
     , inputView
-    , fileView
     , settingsView
+    , hr [] []
+    , fileView
     ]
 
 

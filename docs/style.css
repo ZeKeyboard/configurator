@@ -41,3 +41,13 @@ html {
 .integerSpinner {
     width: 50px;
 }
+
+.serializedModelSpan {
+    display: none;
+}
+
+.uploadButtonDiv {
+    padding-top: 5px;
+    padding-left: 2px;
+    display: block;
+}
