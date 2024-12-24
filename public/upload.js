@@ -11,8 +11,9 @@ button.onclick = () => {
     const writer = port.writable.getWriter();
     let text = document.getElementById("serializedModel").innerText;
 
-    writer.write(encoder.encode(text));
+    await writer.write(encoder.encode(text));
     writer.releaseLock();
+    port.close();
   });
 
 };
