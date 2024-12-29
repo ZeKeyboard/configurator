@@ -1,3 +1,4 @@
 elm-stuff
 src/Generated/
 public/main.js
+server/__pycache__/
