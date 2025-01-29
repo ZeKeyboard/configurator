@@ -24,7 +24,7 @@ initialSettings =
       ]
     backlightSettings =
       [ (2, "Highlight keys on layer", BooleanField True)
-      , (3, "Default scheme", EnumField 0 ["Wave", "Game of Life", "Lights"])
+      , (3, "Default scheme", EnumField 0 ["Wave", "Water", "Game of Life", "Lights"])
       ]
   in
     [

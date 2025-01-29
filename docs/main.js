@@ -6979,7 +6979,7 @@ var $author$project$Settings$initialSettings = function () {
 				$author$project$Settings$EnumField,
 				0,
 				_List_fromArray(
-					['Wave', 'Game of Life', 'Lights'])))
+					['Wave', 'Water', 'Game of Life', 'Lights'])))
 		]);
 	return _List_fromArray(
 		[
