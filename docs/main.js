@@ -8394,7 +8394,6 @@ var $author$project$FileView$exportConfiguration = function (model) {
 		A3($elm$file$File$Download$string, model.name + '.zkb', 'text/plain', serializedContent));
 };
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
-var $author$project$Language$English = {$: 'English'};
 var $author$project$Model$Model = F7(
 	function (layout, settings, currentLayerIndex, selectedKey, name, hovering, language) {
 		return {currentLayerIndex: currentLayerIndex, hovering: hovering, language: language, layout: layout, name: name, selectedKey: selectedKey, settings: settings};
@@ -8428,7 +8427,7 @@ var $author$project$Keyboard$KeyPress = F3(
 var $author$project$LayoutJSONDecoder$keypressDecoder = A4(
 	$elm$json$Json$Decode$map3,
 	$author$project$Keyboard$KeyPress,
-	A2($elm$json$Json$Decode$field, 'keyCode', $author$project$LayoutJSONDecoder$keyCodeDecoder),
+	A2($elm$json$Json$Decode$field, 'key', $author$project$LayoutJSONDecoder$keyCodeDecoder),
 	A2($elm$json$Json$Decode$field, 'modifier', $author$project$LayoutJSONDecoder$keyCodeDecoder),
 	A2($elm$json$Json$Decode$field, 'media', $author$project$LayoutJSONDecoder$keyCodeDecoder));
 var $elm$json$Json$Decode$list = _Json_decodeList;
@@ -8442,13 +8441,13 @@ var $elm$json$Json$Decode$nullable = function (decoder) {
 				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder)
 			]));
 };
+var $author$project$LayoutJSONDecoder$maybeErrorDecoder = $elm$json$Json$Decode$nullable($elm$json$Json$Decode$string);
 var $author$project$LayoutJSONDecoder$sequenceDecoder = A4(
 	$elm$json$Json$Decode$map3,
 	$author$project$Keyboard$Sequence,
 	A2($elm$json$Json$Decode$field, 'rawString', $elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'presses', $author$project$LayoutJSONDecoder$keypressListDecoder),
-	$elm$json$Json$Decode$nullable(
-		A2($elm$json$Json$Decode$field, 'error', $elm$json$Json$Decode$string)));
+	A2($elm$json$Json$Decode$field, 'error', $author$project$LayoutJSONDecoder$maybeErrorDecoder));
 var $author$project$LayoutJSONDecoder$singleKeyCodeDecoder = A2($elm$json$Json$Decode$map, $author$project$Keyboard$Single, $author$project$LayoutJSONDecoder$keyCodeDecoder);
 var $author$project$LayoutJSONDecoder$actionDecoder = $elm$json$Json$Decode$oneOf(
 	_List_fromArray(
@@ -8483,6 +8482,25 @@ var $author$project$LayoutJSONDecoder$keyDecoder = A9(
 	A2($elm$json$Json$Decode$field, 'actions', $author$project$LayoutJSONDecoder$keyActionsDecoder));
 var $author$project$LayoutJSONDecoder$layoutDecoder = $elm$json$Json$Decode$list($author$project$LayoutJSONDecoder$keyDecoder);
 var $elm$json$Json$Decode$map7 = _Json_map7;
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$LayoutJSONDecoder$removeFileExtension = function (name) {
+	var nameSplit = A2($elm$core$String$split, '.', name);
+	var _v0 = $elm$core$List$head(nameSplit);
+	if (_v0.$ === 'Nothing') {
+		return 'Untitled Configuration';
+	} else {
+		var n = _v0.a;
+		return n;
+	}
+};
 var $author$project$Settings$SettingsGroup = F2(
 	function (name, settings) {
 		return {name: name, settings: settings};
@@ -8533,9 +8551,10 @@ var $author$project$LayoutJSONDecoder$modelDecoder = function (name) {
 		A2($elm$json$Json$Decode$field, 'settings', $author$project$LayoutJSONDecoder$settingsDecoder),
 		$elm$json$Json$Decode$succeed(0),
 		$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing),
-		$elm$json$Json$Decode$succeed(name),
+		$elm$json$Json$Decode$succeed(
+			$author$project$LayoutJSONDecoder$removeFileExtension(name)),
 		$elm$json$Json$Decode$succeed(false),
-		$elm$json$Json$Decode$succeed($author$project$Language$English));
+		$elm$json$Json$Decode$succeed($author$project$Language$Swedish));
 };
 var $author$project$LayoutJSONDecoder$decodeModel = F2(
 	function (json, name) {
@@ -10185,15 +10204,6 @@ var $rtfeldman$elm_css$Css$Structure$concatMapLastStyleBlock = F2(
 			first,
 			A2($rtfeldman$elm_css$Css$Structure$concatMapLastStyleBlock, update, rest));
 	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
 var $rtfeldman$elm_css$Css$Preprocess$Resolve$last = function (list) {
 	last:
 	while (true) {
@@ -12167,6 +12177,7 @@ var $author$project$SettingsView$settingsView = function (settings) {
 			]),
 		A2($elm$core$List$map, $author$project$SettingsView$settingsGroupView, settings));
 };
+var $author$project$Language$English = {$: 'English'};
 var $author$project$Messages$SetLanguage = function (a) {
 	return {$: 'SetLanguage', a: a};
 };

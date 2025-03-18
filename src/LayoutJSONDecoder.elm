@@ -23,6 +23,18 @@ decodeModel json name =
         Err (Decode.errorToString err)
 
 
+removeFileExtension : String -> String
+removeFileExtension name =
+  let
+    nameSplit = String.split "." name
+  in
+    case (List.head nameSplit) of
+      Nothing ->
+        "Untitled Configuration"
+      Just n ->
+        n
+
+
 modelDecoder : String -> Decode.Decoder Model
 modelDecoder name =
   Decode.map7 Model
@@ -30,9 +42,9 @@ modelDecoder name =
     (Decode.field "settings" settingsDecoder)
     (Decode.succeed 0)
     (Decode.succeed Nothing)
-    (Decode.succeed name)
+    (Decode.succeed <| removeFileExtension <| name)
     (Decode.succeed False)
-    (Decode.succeed Language.English)
+    (Decode.succeed Language.Swedish)
 
 
 settingsDecoder : Decode.Decoder Settings
@@ -148,7 +160,12 @@ sequenceDecoder =
   Decode.map3 Sequence
     (Decode.field "rawString" Decode.string)
     (Decode.field "presses" keypressListDecoder)
-    (Decode.field "error" Decode.string |> Decode.nullable)
+    (Decode.field "error" maybeErrorDecoder)
+
+
+maybeErrorDecoder : Decode.Decoder (Maybe String)
+maybeErrorDecoder =
+  Decode.nullable Decode.string
 
 
 keypressListDecoder : Decode.Decoder (List KeyPress)
@@ -159,7 +176,7 @@ keypressListDecoder =
 keypressDecoder : Decode.Decoder KeyPress
 keypressDecoder =
   Decode.map3 KeyPress
-    (Decode.field "keyCode" keyCodeDecoder)
+    (Decode.field "key" keyCodeDecoder)
     (Decode.field "modifier" keyCodeDecoder)
     (Decode.field "media" keyCodeDecoder)
 
